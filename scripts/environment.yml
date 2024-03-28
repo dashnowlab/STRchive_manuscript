@@ -1,0 +1,3 @@
+name: strchive-paper
+dependencies:
+  - tqdm
