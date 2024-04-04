@@ -17,7 +17,7 @@ data <- read.csv('/Users/quinlan/Documents/Git/STRchive/data/STR-disease-loci.cs
 filtered_data <- data[!is.na(data$gene), ]
 
 # Extract STRchive gene names into a list
-gene_list <- as.character(filtered_data$gene)
+gene_list <- as.character(unique(filtered_data$gene))
 
 ### Use biomaRt to get gene synonyms
 # This is necessary because gene names have evolved over time and can differ
@@ -38,8 +38,11 @@ if (exists("mart")) {
   cat("Failed to create the mart object. Check your internet connection and try again.")
 }
 
+
 # Replace missing values in 'external_synonym' with 'hgnc_symbol'
 # This is because some gene_names have no synonyms, so it's easier to group this way
+
+
 gene_info$external_synonym[is.na(gene_info$external_synonym) |
                              gene_info$external_synonym == ""] <- gene_info$hgnc_symbol[is.na(
                                gene_info$external_synonym) | gene_info$external_synonym == ""]
