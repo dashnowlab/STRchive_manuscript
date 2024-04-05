@@ -54,14 +54,15 @@ calculate_ci <- function(df, successes_col, trials_col, conf_level, method) {
 # excluding CNG
 total_prev <- subset(total, total$motif_norm != "CNG")
 
+#including CNG
+# total_prev <- total
+
 #while both inheritances are possible... they're more AD, so, we use that here
 total_prev <- total_prev %>%
   mutate(Inheritance = ifelse(gene == 'ATXN2', 'AD', Inheritance))
 total_prev <- total_prev %>%
   mutate(Inheritance = ifelse(gene == 'PABPN1', 'AD', Inheritance))
 
-total_prev <- total_prev %>%
-  mutate(repeatunit_path_normalized = ifelse(repeatunit_path_normalized == 'CNG', 'CAG,CCG,CGG,CTG', repeatunit_path_normalized))
 total_prev$repeatunit_path_normalized_list <- strsplit(as.character(total_prev$repeatunit_path_normalized), ",")
 
 AD_total <- subset(total_prev, Inheritance == "AD")
