@@ -26,18 +26,29 @@ labels <- c("< 10" = "< 10", "50 > x > 10" = "10 < x < 50",
 
 limits <- c("< 10", "50 > x > 10", "100 > x > 50", "> 100")
 
+
 ggplot(subset(STR_table_evidence, !is.na(age_onset_min) & Inheritance != ''),
-       aes(color = ind_obs, x = reorder(gene, -age_onset_max))) +
+       aes(color = ind_obs, x = reorder(gene, -age_onset_min))) +
   scale_x_discrete(name = 'Gene') +
-  geom_linerange(aes(ymin = age_onset_min, ymax = age_onset_max), size = 3, alpha = 0.5) +
+  geom_linerange(aes(ymin = age_onset_min, ymax = age_onset_max), size = 3, alpha = 0.7) +
   geom_linerange(aes(ymin = typ_age_onset_min, ymax = typ_age_onset_max), size = 3) +
   geom_point(data = subset(STR_table_evidence, age_onset_min == age_onset_max), aes(y = age_onset_min), size = 2.5,
              alpha = 1, shape = 17) +
-  geom_segment(aes(x = 1, y = 18, xend = 67, yend = 18), linetype = 'longdash', color = 'lightgrey') +
+  geom_segment(aes(x = 1, y = 18, xend = 67, yend = 18), linetype = 'longdash', color = 'gray') +
   coord_flip() + scale_y_continuous(breaks=c(0,18, 25, 50, 75, 100)) +
   labs(title = "Ranges in Age of Onset With Evidence Levels", y = "Age of Onset (years)") +
-  scale_color_manual(values = c("< 10" = "darkgray", "50 > x > 10" = "lightblue",
-                                "100 > x > 50" = "#3182BD", "> 100" = "darkblue"),
+  scale_color_manual(values = c("< 10" = "#fcbba1", "50 > x > 10" = "#fb6a4a",
+                       "100 > x > 50" = "#99000d", "> 100" = "black"),
                      limits = limits, labels = labels,
                      name = "Ind. Obs.") +  # Rename legend for color (ind_obs)
   theme_minimal()
+
+
+
+# scale_color_manual(values = c("< 10" = "black", "50 > x > 10" = "#fcbba1",
+#                               "100 > x > 50" = "#fb6a4a", "> 100" = "#99000d"),
+
+
+
+# scale_color_manual(values = c("< 10" = "#d0d1e6", "50 > x > 10" = "#67a9cf",
+#                                                  "100 > x > 50" = "#016450", "> 100" = "black"),
