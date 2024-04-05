@@ -1,5 +1,5 @@
 library(RColorBrewer)
-
+library(waffle)
 
 ### Figure 2A
 # Generate 5 shades of blue
@@ -68,17 +68,17 @@ STR_table_coding <- STR_table_coding %>%
 # STR_table_coding <- STR_table_coding %>%
 #   mutate(type2 = ifelse(gene == 'PRNP', 'Coding:P, G, Q', type2))
 
-pie_data <- table(STR_table_coding$type2)
+# Generate a qualitative color palette with 5 colors
+qual_palette <- brewer.pal(5, "Set2")
 
-# Generate 5 shades of blue
-green_palette <- colorRampPalette(c("lightgreen", "darkgreen"))(5)
+# Display the color palette
+qual_palette
 
 # Plot the pie chart with labels
-pie(pie_data, col = green_palette, main = "Coding Subtypes", labels = paste(names(pie_data),"(",pie_data,")"))
+type_counts <- sort(table(STR_table_coding$type2), decreasing = TRUE)
 
-
-
-
+waffle(type_counts, rows = 5, size = 2, colors = qual_palette,
+       title = "Coding Subtypes", flip = TRUE, reverse = TRUE, legend = "bottom")
 
 ### Figure 2B
 STR_table_adjusted <- STR_table %>%
