@@ -18,6 +18,39 @@ calculate_ci <- function(df, successes_col, trials_col, conf_level, method) {
   return(df)
 }
 
+# Checking lowerbound estimates against allele genotypes
+# table(as.numeric(total$Allele2LowerBound) == as.numeric(total$Allele2), useNA = "ifany")
+#
+# table(as.numeric(total$Allele1LowerBound) == as.numeric(total$Allele1), useNA = "ifany")
+#
+# 60201+965298
+#
+# 965298/1025499
+#
+# 33098+1076598
+#
+# 1076598/1109696
+#
+# ### Allele 1
+# differences <- abs(total$Allele1LowerBound - total$Allele1)
+# average_difference <- mean(differences)
+# differences <- total[total$Allele1LowerBound != total$Allele1, c("Allele1LowerBound", "Allele1")]
+# differences <- abs(differences$Allele1LowerBound - differences$Allele1)
+# average_difference <- mean(differences)
+# range(differences)
+# median(differences)
+#
+# ### Allele 2
+# differences <- abs(total$Allele2LowerBound - total$Allele2)
+# average_difference <- mean(differences, na.rm = TRUE)
+#
+# differences <- total[total$Allele2LowerBound != total$Allele2, c("Allele2LowerBound", "Allele2")]
+#
+# differences <- abs(differences$Allele2LowerBound - differences$Allele2)
+# average_difference <- mean(differences, na.rm = TRUE)
+# range(differences, na.rm = TRUE)
+# median(differences, na.rm = TRUE)
+
 # excluding CNG
 total_prev <- subset(total, total$motif_norm != "CNG")
 
