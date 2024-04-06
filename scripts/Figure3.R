@@ -27,8 +27,24 @@ labels <- c("< 10" = "< 10", "50 > x > 10" = "10 < x < 50",
 limits <- c("< 10", "50 > x > 10", "100 > x > 50", "> 100")
 
 
+# get the order in the plot to be age_onset_min, except birth cases first
+
+# Subset the data frame where age_onset_min = age_onset_max
+first_genes <- subset(STR_table_evidence, age_onset_min == age_onset_max)$gene
+
+# Order the data frame by age_onset_min excluding the rows where age_onset_min = age_onset_max
+other_genes <- STR_table_evidence[STR_table_evidence$age_onset_min != STR_table_evidence$age_onset_max, ]
+other_genes <- other_genes[order(other_genes$age_onset_min), ]
+
+# Combine the gene names
+ordered_gene_names <- rev(c(first_genes, other_genes$gene))
+
+#order the df by this
+STR_table_evidence$gene <- factor(STR_table_evidence$gene, levels = ordered_gene_names)
+
+#plot it
 ggplot(subset(STR_table_evidence, !is.na(age_onset_min) & Inheritance != ''),
-       aes(color = ind_obs, x = reorder(gene, -age_onset_min))) +
+       aes(color = ind_obs, x = gene)) +
   scale_x_discrete(name = 'Gene') +
   geom_linerange(aes(ymin = age_onset_min, ymax = age_onset_max), size = 3, alpha = 0.7) +
   geom_linerange(aes(ymin = typ_age_onset_min, ymax = typ_age_onset_max), size = 3) +
@@ -42,7 +58,6 @@ ggplot(subset(STR_table_evidence, !is.na(age_onset_min) & Inheritance != ''),
                      limits = limits, labels = labels,
                      name = "Ind. Obs.") +  # Rename legend for color (ind_obs)
   theme_minimal()
-
 
 
 # scale_color_manual(values = c("< 10" = "black", "50 > x > 10" = "#fcbba1",
