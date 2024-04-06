@@ -50,11 +50,11 @@ ggplot(subset(STR_table_evidence, !is.na(age_onset_min) & Inheritance != ''),
   geom_linerange(aes(ymin = typ_age_onset_min, ymax = typ_age_onset_max), size = 3) +
   geom_point(data = subset(STR_table_evidence, age_onset_min == age_onset_max), aes(y = age_onset_min), size = 2.5,
              alpha = 1, shape = 17) +
-  geom_segment(aes(x = 1, y = 18, xend = 67, yend = 18), linetype = 'longdash', color = 'gray') +
+  geom_segment(aes(x = 1, y = 18, xend = 67, yend = 18), linetype = 'longdash', color = 'black') +
   coord_flip() + scale_y_continuous(breaks=c(0,18, 25, 50, 75, 100)) +
   labs(title = "Ranges in Age of Onset With Evidence Levels", y = "Age of Onset (years)") +
-  scale_color_manual(values = c("< 10" = "#fcbba1", "50 > x > 10" = "#fb6a4a",
-                       "100 > x > 50" = "#99000d", "> 100" = "black"),
+  scale_color_manual(values = c("< 10" = "gray", "50 > x > 10" = "#DDCC77",
+                                "100 > x > 50" = "#88CCEE", "> 100" = "#332288"),
                      limits = limits, labels = labels,
                      name = "Ind. Obs.") +  # Rename legend for color (ind_obs)
   theme_minimal()

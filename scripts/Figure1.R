@@ -3,9 +3,9 @@ library(ggrepel)
 
 #can upload data from file path or use all_pub_info_df
 # either can be generated from AutomatedLiteratureRetrieval.R
- # file_path <- "/Users/quinlan/Documents/Git/STRchive/data/all_pub_info_20240404.tsv"
+ file_path <- "/Users/quinlan/Documents/Git/STRchive/data/all_pub_info_20240404.tsv"
  #
- # all_pub_info_df <- read.table(file_path, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+ all_pub_info_df <- read.table(file_path, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
 
 
 ### Adding more curated data to use in visualization of PMIDs
@@ -139,8 +139,8 @@ ggplot(merged_data, aes(x = MinPublicationYear, y = TotalPMIDs, label = GeneName
                                "100 > x > 50" = 4, "> 100" = 6),
                     limits = limits,
                     labels = labels) +
-  scale_color_manual(values = c("< 10" = "#fcbba1", "50 > x > 10" = "#fb6a4a",
-                                "100 > x > 50" = "#99000d", "> 100" = "black"),
+  scale_color_manual(values = c("< 10" = "gray", "50 > x > 10" = "#DDCC77",
+                                "100 > x > 50" = "#88CCEE", "> 100" = "#332288"),
                      limits = limits, labels = labels,
                      name = "Ind. Obs.") +  # Rename legend for color (ind_obs)
   theme_minimal()
