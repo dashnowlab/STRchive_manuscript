@@ -126,16 +126,18 @@ labels <- c("< 10" = "< 10", "50 > x > 10" = "10 < x < 50",
 limits <- c("< 10", "50 > x > 10", "100 > x > 50", "> 100")
 
 #final plot
+library(ggplot2)
+
 ggplot(merged_data, aes(x = MinPublicationYear, y = TotalPMIDs, label = GeneName)) +
   geom_jitter(aes(size = ind_obs, color = ind_obs), width = 0.5) +
   geom_text_repel(data = subset(summary_data, !duplicated(GeneName)), aes(label = GeneName),
                   box.padding = 0.5, segment.color = "grey50", segment.size = 0.2,
-                  nudge_y = 0.1, size = 4) +
+                  nudge_y = 0.1, size = 5) +
   labs(title = "Minimum Publication Year by Total Number of Unique PMIDs",
        x = "Minimum Publication Year",
        y = "Total Number of Unique PMIDs (log scale)",
-       size = "Ind. Obs.") +  # Rename legend for size (ind_obs)
-  scale_y_log10() +  # Set y-axis to log scale
+       size = "Ind. Obs.") +
+  scale_y_log10() +
   scale_size_manual(values = c("< 10" = 2, "50 > x > 10" = 3,
                                "100 > x > 50" = 4, "> 100" = 6),
                     limits = limits,
@@ -143,7 +145,10 @@ ggplot(merged_data, aes(x = MinPublicationYear, y = TotalPMIDs, label = GeneName
   scale_color_manual(values = c("< 10" = "gray", "50 > x > 10" = "#DDCC77",
                                 "100 > x > 50" = "#88CCEE", "> 100" = "#332288"),
                      limits = limits, labels = labels,
-                     name = "Ind. Obs.") +  # Rename legend for color (ind_obs) +
+                     name = "Ind. Obs.") +
   scale_x_continuous(breaks = scales::pretty_breaks(n = 20)) +
-  theme_minimal()
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 14),
+        axis.text.y = element_text(size = 14))
+
 
