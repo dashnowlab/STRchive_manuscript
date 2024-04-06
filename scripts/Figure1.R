@@ -1,5 +1,6 @@
 library(ggplot2)
 library(ggrepel)
+library(scales)
 
 #can upload data from file path or use all_pub_info_df
 # either can be generated from AutomatedLiteratureRetrieval.R
@@ -126,7 +127,7 @@ limits <- c("< 10", "50 > x > 10", "100 > x > 50", "> 100")
 
 #final plot
 ggplot(merged_data, aes(x = MinPublicationYear, y = TotalPMIDs, label = GeneName)) +
-  geom_jitter(aes(size = ind_obs, color = ind_obs)) +
+  geom_jitter(aes(size = ind_obs, color = ind_obs), width = 0.5) +
   geom_text_repel(data = subset(summary_data, !duplicated(GeneName)), aes(label = GeneName),
                   box.padding = 0.5, segment.color = "grey50", segment.size = 0.2,
                   nudge_y = 0.1, size = 4) +
@@ -142,6 +143,7 @@ ggplot(merged_data, aes(x = MinPublicationYear, y = TotalPMIDs, label = GeneName
   scale_color_manual(values = c("< 10" = "gray", "50 > x > 10" = "#DDCC77",
                                 "100 > x > 50" = "#88CCEE", "> 100" = "#332288"),
                      limits = limits, labels = labels,
-                     name = "Ind. Obs.") +  # Rename legend for color (ind_obs)
+                     name = "Ind. Obs.") +  # Rename legend for color (ind_obs) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 20)) +
   theme_minimal()
 
