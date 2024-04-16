@@ -15,7 +15,7 @@ def main():
                    help="If not specified, the sample id will be parsed from the last column of the vcf header.")
     p.add_argument("--tsv-prefix", help="Output tsv path prefix (.tsv will be added)", default="all_samples")
     p.add_argument("vcf_paths", help="TRGT vcf path", nargs="+")
-    
+
     args = p.parse_args()
 
     all_locus_results = []
@@ -35,15 +35,15 @@ def main():
 
         with open(AL_tsv_path, "w") as AL_tsv, open(MC_tsv_path, "w") as MC_tsv:
             ALheader = [
-                "Sample", "Sex", 
-                "Chrom", "Pos", "Locus",  
-                "Structure", "AlleleIndex",  
+                "Sample", "Sex",
+                "Chrom", "Pos", "Locus",
+                "Structure", "AlleleIndex",
                 "AlleleLengthBP", "AlleleLengthRange"
                       ]
             MCheader = [
-                "Sample", "Sex", 
-                "Chrom", "Pos", "Locus", 
-                "LocusMotifId", "AlleleIndex",  
+                "Sample", "Sex",
+                "Chrom", "Pos", "Locus",
+                "LocusMotifId", "AlleleIndex",
                 "Motif", "MotifCount"
                       ]
             AL_tsv.write("\t".join(ALheader) + "\n")
@@ -56,8 +56,8 @@ def main():
                         variantdict = locusdict['Variants'][variant]
                         for i in range(len(variantdict['AL'])):
                             ALoutlist = [
-                                sample, sampledict['Sex'], 
-                                locusdict['Chrom'], locusdict['Pos'], locusdict['LocusId'], 
+                                sample, sampledict['Sex'],
+                                locusdict['Chrom'], locusdict['Pos'], locusdict['LocusId'],
                                 variantdict['STRUC'], i,
                                 variantdict['AL'][i], variantdict['ALLR'][i]
                                        ]
@@ -65,7 +65,7 @@ def main():
                             for motif in locusdict['MotifIds']:
                                 motifdict = locusdict['MotifIds'][motif]
                                 MCoutlist = [
-                                    sample, sampledict['Sex'], 
+                                    sample, sampledict['Sex'],
                                     locusdict['Chrom'], locusdict['Pos'], locusdict['LocusId'],
                                     motifdict['MotifId'], i,
                                     motifdict['Motif'], motifdict['MotifCount'][i]
@@ -83,7 +83,7 @@ def parse_TRGT_genotype(format, genotype):
     genotype_fields = format.split(":")
     genotype_values = genotype.split(":")
     genotype_dict = dict(zip(genotype_fields, genotype_values))
-    
+
     for key, value in genotype_dict.items():
         if "," in value:
             genotype_dict[key] = value.split(",")
@@ -164,7 +164,7 @@ def process_trgt_vcf(vcf_path, sample_id=None, verbose=False):
             try:
                 locus_id = info_dict["TRID"]
                 end_1based = int(info_dict["END"])
-                    
+
                 locus_results["LocusResults"][locus_id] = {
                     "AlleleCount": len(genotype_dict["AL"]),
                     "LocusId": locus_id,
@@ -194,7 +194,6 @@ def process_trgt_vcf(vcf_path, sample_id=None, verbose=False):
                 traceback.print_exc()
 
     return locus_results
-
 
 if __name__ == "__main__":
     main()

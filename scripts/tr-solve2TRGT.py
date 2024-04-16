@@ -143,12 +143,8 @@ def main(infile: pathlib.Path, outfile: str = 'stdout', *,
                 #sys.stderr.write(f'{motifs}\t{bounds}\n')
                 unique_motifs = dict.fromkeys(motifs) # can use set(motifs) if order doesn't matter. Assume it does for now
                 motifs_str = ','.join(unique_motifs)
-                motifs_str_no_comma = motifs_str.replace(',', '')
                 #print(bounds)
-                if bounds[0] is not None:
-                    val = (bounds[1]-bounds[0])/len(motifs_str_no_comma)
                 struc = ''.join([f'({motif})n' for motif in rmdup(motifs)])
-
                 if seqout:
                     outstring = f'{alt}\t'
                 else:
@@ -159,7 +155,6 @@ def main(infile: pathlib.Path, outfile: str = 'stdout', *,
                                 f'MOTIF={motifs_str}',
                                 f'STRUC={struc}',
                                 f'ID={ids}',
-                                f'calc#={val}',
                                 f'MC_VCF={MC}'
                             ]) + '\n'
                 f.write(outstring)
@@ -170,8 +165,6 @@ def main(infile: pathlib.Path, outfile: str = 'stdout', *,
                 #print(bounds[0], bounds[1])
                 unique_motifs = dict.fromkeys(motifs) # can use set(motifs) if order doesn't matter. Assume it does for now
                 motifs_str = ','.join(unique_motifs)
-                motifs_str_no_comma = motifs_str.replace(',', '')
-                val = (bounds[1]-bounds[0])/len(motifs_str_no_comma)
                 struc = ''.join([f'({motif})n' for motif in rmdup(motifs)])
                 if seqout:
                     outstring = f'{alt}\t'
@@ -184,7 +177,6 @@ def main(infile: pathlib.Path, outfile: str = 'stdout', *,
                                 f'MOTIF={motifs_str}',
                                 f'STRUC={struc}',
                                 f'ID={ids}',
-                                f'calc#={val}',
                                 f'MC_VCF={MC}'
                             ]) + '\n'
                 f.write(outstring)
