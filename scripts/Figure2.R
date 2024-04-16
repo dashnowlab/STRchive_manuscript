@@ -110,6 +110,11 @@ STR_table_adjusted$path_max_bp = STR_table_adjusted$pathogenic_max * STR_table_a
 
 ### presumably, I'm going to remove untrustworthy data
 
+genes_to_remove <- c("DMD", "ZIC3", "TNR6CA", "YEATS2", "TBX1", "POLG")
+
+STR_table_adjusted <- STR_table_adjusted %>%
+  filter(!gene %in% genes_to_remove)
+
 ggplot(STR_table_adjusted, aes(x = gene)) +
   geom_linerange(aes(ymin = norm_max_bp, ymax = path_max_bp, color = "gray"),
                  linewidth = 1.5, linetype = "dotted", alpha = 0.3) +

@@ -42,6 +42,11 @@ ordered_gene_names <- rev(c(first_genes, other_genes$gene))
 #order the df by this
 STR_table_evidence$gene <- factor(STR_table_evidence$gene, levels = ordered_gene_names)
 
+genes_to_remove <- c("DMD", "ZIC3", "TNR6CA", "YEATS2", "TBX1", "POLG")
+
+STR_table_evidence <- STR_table_evidence %>%
+  filter(!gene %in% genes_to_remove)
+
 #plot it
 ggplot(subset(STR_table_evidence, !is.na(age_onset_min) & Inheritance != ''),
        aes(color = ind_obs, x = gene)) +
@@ -50,7 +55,7 @@ ggplot(subset(STR_table_evidence, !is.na(age_onset_min) & Inheritance != ''),
   geom_linerange(aes(ymin = typ_age_onset_min, ymax = typ_age_onset_max), size = 3) +
   geom_point(data = subset(STR_table_evidence, age_onset_min == age_onset_max), aes(y = age_onset_min), size = 2.5,
              alpha = 1, shape = 17) +
-  geom_segment(aes(x = 1, y = 18, xend = 68, yend = 18), linetype = 'longdash', color = 'black') +
+  geom_segment(aes(x = 1, y = 18, xend = 64, yend = 18), linetype = 'longdash', color = 'black') +
   coord_flip() + scale_y_continuous(breaks=c(0,18, 25, 50, 75, 100)) +
   labs(title = "Ranges in Age of Onset With Evidence Levels", y = "Age of Onset (years)") +
   scale_color_manual(values = c("< 10" = "gray", "50 > x > 10" = "#DDCC77",
