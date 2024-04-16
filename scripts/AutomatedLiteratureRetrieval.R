@@ -79,7 +79,7 @@ consolidated_strings <- gene_info %>%
 consolidated_strings <- gsub("BMD", "Becker muscular dystrophy", consolidated_strings)
 
 #where results will be stored
-base_directory <- '/Users/quinlan/Documents/Git/STRchive/data/'
+base_directory <- '/Users/quinlan/Documents/Git/STRchive_manuscript/data/literature/'
 
 # function to perform the pubmed query
 # Function printout includes gene name and if there are results, confirms
@@ -211,7 +211,7 @@ all_pub_info_df <- do.call(rbind, pub_info_list)
 current_date <- format(Sys.Date(), "%Y%m%d")
 
 # Concatenate the date to the file name
-file_name <- paste0("/Users/quinlan/Documents/Git/STRchive/data/all_pub_info_", current_date, ".tsv")
+file_name <- paste0("/Users/quinlan/Documents/Git/STRchive_manuscript/data/all_pub_info_", current_date, ".tsv")
 
 # Write the table with the updated file name
 write.table(all_pub_info_df, file_name, sep = "\t", quote = FALSE, row.names = FALSE)
