@@ -6,5 +6,3 @@
 
 
 #/scratch/ucgd/lustre-work/quinlan/data-shared/datasets/HPRC/trgt-v0.8.0-9bd9f00/HG00099.vcf.gz
-
-#python scripts/tr-solve2TRGT.py /scratch/ucgd/lustre-work/quinlan/data-shared/datasets/HPRC/trgt-v0.8.0-9bd9f00/HG00099.vcf.gz

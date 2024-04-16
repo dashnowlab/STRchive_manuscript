@@ -14,7 +14,7 @@ from itertools import groupby
 def extractvcf(infile: pathlib.Path, minins: int = 8):
     cyvcf2_vcf = cyvcf2.VCF(infile)
     for locus in cyvcf2_vcf:
-            yield (locus.CHROM, locus.POS, locus.POS), locus.ALT, locus.REF, locus.INFO.get('TRID')
+            yield (locus.CHROM, locus.POS, locus.POS), locus.ALT, locus.REF, locus.format('AL'), locus.format('MC'), locus.INFO.get('TRID')
 
 def parsetrsolve(motif_string: str):
     """
@@ -137,34 +137,56 @@ def main(infile: pathlib.Path, outfile: str = 'stdout', *,
     else:
         f = open(outfile, 'w')
 
-    for (chrom, start_orig, end_orig), alts, refs, ids in sequences:
+    for (chrom, start_orig, end_orig), alts, refs, AL, MC, ids in sequences:
         if not alts:
-                #print(refs)
                 motifs, bounds = runtrsolve(refs, trsolve=trtools)
                 #sys.stderr.write(f'{motifs}\t{bounds}\n')
                 unique_motifs = dict.fromkeys(motifs) # can use set(motifs) if order doesn't matter. Assume it does for now
                 motifs_str = ','.join(unique_motifs)
+                motifs_str_no_comma = motifs_str.replace(',', '')
+                #print(bounds)
+                if bounds[0] is not None:
+                    val = (bounds[1]-bounds[0])/len(motifs_str_no_comma)
                 struc = ''.join([f'({motif})n' for motif in rmdup(motifs)])
 
                 if seqout:
                     outstring = f'{alt}\t'
                 else:
                     outstring = ''
-                outstring += f'REF, MOTIFS={motifs_str};STRUC={struc};ID={ids}\n'
+                outstring += '\t'.join([
+                                f'REF',
+                                f'MOTIFS={set(motifs)}',
+                                f'MOTIF={motifs_str}',
+                                f'STRUC={struc}',
+                                f'ID={ids}',
+                                f'calc#={val}',
+                                f'MC_VCF={MC}'
+                            ]) + '\n'
                 f.write(outstring)
         else:
             for alt in alts:
-                #print(alt)
                 motifs, bounds = runtrsolve(alt, trsolve=trtools)
-
+                #print(bounds)
+                #print(bounds[0], bounds[1])
                 unique_motifs = dict.fromkeys(motifs) # can use set(motifs) if order doesn't matter. Assume it does for now
                 motifs_str = ','.join(unique_motifs)
+                motifs_str_no_comma = motifs_str.replace(',', '')
+                val = (bounds[1]-bounds[0])/len(motifs_str_no_comma)
                 struc = ''.join([f'({motif})n' for motif in rmdup(motifs)])
                 if seqout:
                     outstring = f'{alt}\t'
                 else:
                     outstring = ''
-                outstring += f'ALT, MOTIFS={motifs_str};STRUC={struc};ID={ids}\n'
+                #outstring += f'ALT: MOTIFS={set(motifs)};MOTIF={motifs_str};STRUC={struc};ID={ids}, calc#={val}, MC_VCF={MC}\n'
+                outstring += '\t'.join([
+                                f'ALT',
+                                f'MOTIFS={set(motifs)}',
+                                f'MOTIF={motifs_str}',
+                                f'STRUC={struc}',
+                                f'ID={ids}',
+                                f'calc#={val}',
+                                f'MC_VCF={MC}'
+                            ]) + '\n'
                 f.write(outstring)
 
     f.flush()
