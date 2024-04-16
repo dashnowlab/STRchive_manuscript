@@ -138,74 +138,34 @@ def main(infile: pathlib.Path, outfile: str = 'stdout', *,
         f = open(outfile, 'w')
 
     for (chrom, start_orig, end_orig), alts, refs, ids in sequences:
-        print(alts, refs)
-        for alt in alts:
-            motifs, bounds = runtrsolve(alt, trsolve=trtools)
-            #sys.stderr.write(f'{motifs}\t{bounds}\n')
+        if not alts:
+                #print(refs)
+                motifs, bounds = runtrsolve(refs, trsolve=trtools)
+                #sys.stderr.write(f'{motifs}\t{bounds}\n')
+                unique_motifs = dict.fromkeys(motifs) # can use set(motifs) if order doesn't matter. Assume it does for now
+                motifs_str = ','.join(unique_motifs)
+                struc = ''.join([f'({motif})n' for motif in rmdup(motifs)])
 
-            if len(motifs) == 0:
                 if seqout:
-                    f.write(f'{alt}\tNone\n')
-                continue
-            start = int(start_orig)
-            end = int(end_orig)
+                    outstring = f'{alt}\t'
+                else:
+                    outstring = ''
+                outstring += f'REF, MOTIFS={motifs_str};STRUC={struc};ID={ids}\n'
+                f.write(outstring)
+        else:
+            for alt in alts:
+                #print(alt)
+                motifs, bounds = runtrsolve(alt, trsolve=trtools)
 
-            if trim:
-
-                # Trim the bounds to the bases covered by the motifs
-                if bounds[0] is not None:
-                    start += bounds[0]
-                if bounds[1] is not None:
-                    end = start + bounds[1] - bounds[0]
-
-                if start > int(end_orig):
-                    start = int(end_orig)
-                if end < int(start_orig):
-                    end = int(start_orig)
-
-            unique_motifs = dict.fromkeys(motifs) # can use set(motifs) if order doesn't matter. Assume it does for now
-            motifs_str = ','.join(unique_motifs)
-            struc = ''.join([f'({motif})n' for motif in rmdup(motifs)])
-            if seqout:
-                outstring = f'{alt}\t'
-            else:
-                outstring = ''
-            outstring += f'ALT, MOTIFS={motifs_str};STRUC={struc};ID={ids}\n'
-            f.write(outstring)
-
-        for ref in refs:
-            motifs, bounds = runtrsolve(ref, trsolve=trtools)
-            #sys.stderr.write(f'{motifs}\t{bounds}\n')
-
-            if len(motifs) == 0:
+                unique_motifs = dict.fromkeys(motifs) # can use set(motifs) if order doesn't matter. Assume it does for now
+                motifs_str = ','.join(unique_motifs)
+                struc = ''.join([f'({motif})n' for motif in rmdup(motifs)])
                 if seqout:
-                    f.write(f'{ref}\tNone\n')
-                continue
-            start = int(start_orig)
-            end = int(end_orig)
-
-            if trim:
-
-                # Trim the bounds to the bases covered by the motifs
-                if bounds[0] is not None:
-                    start += bounds[0]
-                if bounds[1] is not None:
-                    end = start + bounds[1] - bounds[0]
-
-                if start > int(end_orig):
-                    start = int(end_orig)
-                if end < int(start_orig):
-                    end = int(start_orig)
-
-            unique_motifs = dict.fromkeys(motifs) # can use set(motifs) if order doesn't matter. Assume it does for now
-            motifs_str = ','.join(unique_motifs)
-            struc = ''.join([f'({motif})n' for motif in rmdup(motifs)])
-            if seqout:
-                outstring = f'{alt}\t'
-            else:
-                outstring = ''
-            outstring += f'REF, MOTIFS={motifs_str};STRUC={struc};ID={ids}\n'
-            f.write(outstring)
+                    outstring = f'{alt}\t'
+                else:
+                    outstring = ''
+                outstring += f'ALT, MOTIFS={motifs_str};STRUC={struc};ID={ids}\n'
+                f.write(outstring)
 
     f.flush()
 
