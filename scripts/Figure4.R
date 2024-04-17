@@ -86,3 +86,27 @@ ggplot(unique_motif_counts_long, aes(x = gene, fill = classification)) +
                                "ref" = "Reference",
                                "unknown" = "Unknown",
                                "path" = "Pathogenic"))
+
+
+
+longread_uniquemotifcounts <- data.frame(
+  stringsAsFactors = FALSE,
+              Gene = c("ATXN7","CNBP",
+                       "YEATS2","HTT","PHOX2B",
+                       "TBP","FXN","C9orf72",
+                       "ATXN8OS","PABPN1","XYLT1",
+                       "RFC1","NOP56","FGF14",
+                       "BEAN1","STARD7","SAMD12","ZFHX3",
+                       "NOTCH2NLC","RAPGEF2"),
+  UniqueMotifCount = c(2L,3L,3L,4L,2L,2L,3L,3L,
+                       2L,2L,7L,17L,2L,2L,3L,10L,2L,3L,2L,2L),
+            motif = c("GCC, CAG",
+                       "AC,AGGCAGGCAGGCAGGCAGGCAGGCAGGCAGAC,AGGC","TTTAT,TTATG,TGTTA",
+                       "AGC,GCC,CCT,CCG","GCT,GCC","CAA,CAG","GAA,AAG,A",
+                       "GCCCCG,ACCGCA,CCCCGGGCCCGC","CTG,CTA","GCA,GCG",
+                       "GCC,CGCGG,GGGCGC,GC,AGG,AGGCGGG,AGGG",
+                       "GAAAG,GGGAA,AAAGG,GGAAAG,GGAA,AAAGGG,AGGAA,A,AAGAG,GAAAA,GAAGA,AAGGG,GGGAAGGAA,GGAAAA,GGAAA,AAAGA,AAGGA",
+                       "GCCTGG,GCCTGC","AGC,GAA","ATAAC,ATAAA,A",
+                       "AAATAAATAAAATA,ATAAA,AAAAT,AAATAAAATAACATA,AAAAG,ACAAA,AACAT,ATAAC,AAATA,AACAC","ATAAC,AATAA",
+                       "CCGCCGCCACTGCCA,GCCACT,CCG","GGA,GCG","TTTAT,TTATG")
+)

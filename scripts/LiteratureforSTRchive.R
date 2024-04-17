@@ -158,6 +158,9 @@ for (gene_name in names(file_paths)) {
   })
 }
 
+# empty list for the pubication info
+pub_info_list <- list()
+
 extract_citation_info <- function(medline_data_list, gene_name) {
   # Combine the list of XML strings into a single string
   medline_string <- paste(medline_data_list, collapse = "")
@@ -216,15 +219,20 @@ all_pub_info_df <- do.call(rbind, pub_info_list)
 # Group the data frame by GeneName and convert each group to a list
 grouped_data <- split(all_pub_info_df, all_pub_info_df$GeneName)
 
-# Convert each group to a JSON object and combine them into a list (entry of PMID, Date, and Title)
+# Convert each group to a JSON object and combine them into a list (entry of PMID with Date and Title)
 json_list <- lapply(grouped_data, function(df) {
-  as.list(apply(df[, c("PMID", "PublicationDate", "Title")], 1, function(row) {
-    paste(row, collapse = ", ")
-  }))
+  lapply(split(df, df$PMID), function(sub_df) {
+    lapply(1:nrow(sub_df), function(row_index) {
+      list(
+        PublicationDate = sub_df$PublicationDate[row_index],
+        Title = sub_df$Title[row_index]
+      )
+    })
+  })
 })
 
 # Convert the list of JSON objects to a JSON string
 json_string <- toJSON(json_list, pretty = TRUE)
 
 # Write the JSON string to a file
-write(json_string, file = "/Users/quinlan/Documents/Git/STRchive_manuscript/data/STRchive_literature.json")
+write(json_string, file = "/Users/quinlan/Documents/Git/STRchive_manuscript/data/STRchive_literature_PMID.json")
