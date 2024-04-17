@@ -137,6 +137,8 @@ def main(infile: pathlib.Path, outfile: str = 'stdout', *,
     else:
         f = open(outfile, 'w')
 
+    sample_name = infile.stem.replace('.vcf', '').replace('.gz', '')
+
     for (chrom, start_orig, end_orig), alts, refs, AL, MC, ids in sequences:
         if not alts:
                 motifs, bounds = runtrsolve(refs, trsolve=trtools)
@@ -150,7 +152,8 @@ def main(infile: pathlib.Path, outfile: str = 'stdout', *,
                 else:
                     outstring = ''
                 outstring += '\t'.join([
-                                f'REF',
+                                f'{sample_name}',
+                                f'REF={refs}',
                                 f'MOTIFS={set(motifs)}',
                                 f'MOTIF={motifs_str}',
                                 f'STRUC={struc}',
@@ -161,8 +164,6 @@ def main(infile: pathlib.Path, outfile: str = 'stdout', *,
         else:
             for alt in alts:
                 motifs, bounds = runtrsolve(alt, trsolve=trtools)
-                #print(bounds)
-                #print(bounds[0], bounds[1])
                 unique_motifs = dict.fromkeys(motifs) # can use set(motifs) if order doesn't matter. Assume it does for now
                 motifs_str = ','.join(unique_motifs)
                 struc = ''.join([f'({motif})n' for motif in rmdup(motifs)])
@@ -172,7 +173,8 @@ def main(infile: pathlib.Path, outfile: str = 'stdout', *,
                     outstring = ''
                 #outstring += f'ALT: MOTIFS={set(motifs)};MOTIF={motifs_str};STRUC={struc};ID={ids}, calc#={val}, MC_VCF={MC}\n'
                 outstring += '\t'.join([
-                                f'ALT',
+                                f'{sample_name}',
+                                f'ALT={alt}',
                                 f'MOTIFS={set(motifs)}',
                                 f'MOTIF={motifs_str}',
                                 f'STRUC={struc}',
