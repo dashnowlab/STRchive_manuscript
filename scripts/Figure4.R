@@ -11,7 +11,7 @@ STR_table_motif <- STR_table[c("gene", "benign_motif_reference_orientation",
 
 longreadmotifcounts <- tibble(
   gene = c("YEATS2",
-           "RAPGEF2","C9orf72","XYLT1",
+           "RAPGEF2","C9ORF72","XYLT1",
            "RFC1","FGF14","BEAN1",
            "STARD7","SAMD12","ZFHX3"),
   UniqueMotifCount = c(3L, 2L, 3L, 7L, 17L, 2L, 3L, 10L, 2L, 3L),
