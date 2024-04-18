@@ -1,0 +1,69 @@
+TR_ID	TR_Locus	Motif	Ref_genome_copies	TR_feature	Neighbor_gene	Neighbor_gene_type	TR-associated_Disease	OMIM_ID
+TR102881	chr10:79826383-79826404	GGC	7	exon	NUTM2B-AS1	lncRNA	Oculopharyngeal myopathy with leukoencephalopathy 1	618637
+TR112816	chr11:119206289-119206322	CGG	11	five_prime_UTR	CBL	protein_coding	Blood platelet levels	607785, 613563
+TR114246	chr12:6936716-6936773	CAG	19	CDS	ATN1	protein_coding	Dentatorubral-pallidoluysian atrophy	125370
+TR116656	chr12:50505001-50505022	GGC	7	five_prime_UTR	DIP2B	protein_coding	Mental retardation, FRA12A type	136630
+TR120465	chr12:111598949-111599018	GCT	23	five_prime_UTR	ATXN2	protein_coding	Spinocerebellar ataxia 2	183090
+TR121403	chr12:123533720-123533750	GGC	10	intergenic	RILPL1	protein_coding	Oculopharyngodistal myopathy	619790
+TR125263	chr13:70139353-70139383	CTA	10	intron	ATXN8OS	lncRNA	Spinocerebellar ataxia 8	608768
+TR125264	chr13:70139383-70139428	CTG	15	intron	ATXN8OS	lncRNA	Spinocerebellar ataxia 8	608768
+TR127312	chr13:99985448-99985493	GCN	15	CDS	ZIC2	protein_coding	Holoprosencephaly 5	609637
+TR128439	chr14:23321472-23321490	GCG	6	start_codon	PABPN1	protein_coding	Oculopharyngeal muscular dystrophy	164300
+TR132758	chr14:92071010-92071040	CTG	10	three_prime_UTR	ATXN3	protein_coding	Spinocerebellar ataxia 3	109150
+TR133649	chr15:22786677-22786701	GCG	8	CDS	NIPA1	protein_coding	Amyotrophic lateral sclerosis	105400
+TR139509	chr16:17470907-17470922	GCC	5	five_prime_UTR	XYLT1	protein_coding	Desbuquois dysplasia-2	615777
+TR139999	chr16:24613439-24613529	TTTTA	18	intron	TNRC6A	protein_coding	Familial adult myoclonic epilepsy 6	618074
+TR141992	chr16:66490398-66490453	TAAAA	11	intron	BEAN1	protein_coding	Spinocerebellar ataxia 31	117210
+TR143309	chr16:87604287-87604329	CTG	14	intron	JPH3	protein_coding	Huntington disease-like phenotype	606438
+TR148462	chr17:80147059-80147139	CCTCGCTGTGCCGCTGCCGA	4	five_prime_UTR	EIF4A3	protein_coding	Richieri-Costa-Pereira syndrome	268305
+TR151784	chr18:55586155-55586227	CAG	24	five_prime_UTR	TCF4	protein_coding	Fuchs endothelial corneal dystrophy-3	613267
+TR154515	chr19:13207858-13207897	CTG	13	three_prime_UTR	CACNA1A	protein_coding	Spinocerebellar ataxia 6	183086
+TR154638	chr19:14496041-14496074	CCG	11	five_prime_UTR	GIPC1	protein_coding	Oculopharyngodistal myopathy 2	618940
+TR155017	chr19:18786034-18786049	GTC	5	CDS	COMP	protein_coding	Multiple epiphyseal dysplasia, Pseudoachondroplasia	132400, 177170
+TR156684	chr19:45770204-45770264	CAG	20	three_prime_UTR	DMPK	protein_coding	Myotonic dystrophy 1	160900
+TR157810	chr20:2652733-2652757	GGCCTG	4	intron	NOP56	protein_coding	Spinocerebellar ataxia 36	614153
+TR157811	chr20:2652757-2652775	CGCCTG	3	intron	NOP56	protein_coding	Spinocerebellar ataxia 36	614153
+TR157963	chr20:4699370-4699397	CCTCAGGGCGGTGGTGGCTGGGGGCAG	1	CDS	PRNP	protein_coding	Creutzfeldt-Jakob disease	123400
+TR157964	chr20:4699397-4699493	CCTCATGGTGGTGGCTGGGGGCAG	4	CDS	PRNP	protein_coding	Creutzfeldt-Jakob disease	123400
+TR163552	chr21:43776443-43776479	CGCGGGGCGGGG	3	intergenic	CSTB	protein_coding	Epilepsy Progressive Myoclonic	254800
+TR163862	chr22:19766762-19766807	GCN	15	CDS	TBX1	protein_coding	Tetralogy of Fallot	187500
+TR165509	chr22:45795354-45795424	ATTCT	14	intron	ATXN10	protein_coding	Spinocerebellar ataxia 10	603516
+TR167316	chrX:25013529-25013565	NGC	12	CDS	ARX	protein_coding	Developmental and epileptic encephalopathy-1, Partington syndrome, X-linked mental retardation with or without seizures	308,350,309,510,300,000
+TR167317	chrX:25013649-25013697	NGC	16	CDS	ARX	protein_coding	Developmental and epileptic encephalopathy-1, X-linked mental retardation with or without seizures	308,350,309,510,300,000
+TR167703	chrX:31284557-31284605	TTC	16	intron	DMD	protein_coding	Duchenne muscular dystrophy	310200
+TR169377	chrX:67545316-67545385	GCA	23	CDS	AR	protein_coding	Spinal and bulbar muscular atrophy	313200
+TR173313	chrX:137566826-137566856	GCN	10	CDS	ZIC3	protein_coding	X-linked VACTERL syndrome	314390
+TR173479	chrX:140504316-140504361	NGC	15	CDS	SOX3	protein_coding	X-linked mental retardation with isolated growth hormone, X-linked panhypopituitarism	300123, 312000
+TR173944	chrX:147912050-147912110	CGG	20	five_prime_UTR	FMR1	protein_coding	Fragile X tremor/ataxia syndrome, Fragile X Syndrome	300623, 300624
+TR173976	chrX:148500631-148500691	GCC	20	five_prime_UTR	AFF2	protein_coding	FRAXE mental retardation	309548
+TR19329	chr2:96197066-96197121	AAAAT	11	intron	STARD7	protein_coding	Familial adult myoclonic epilepsy 2	607876
+TR24032	chr2:176093058-176093103	GCG	15	CDS	HOXD13	protein_coding	Synpolydactyly	186000
+TR24838	chr2:190880872-190880920	GCA	16	five_prime_UTR	GLS	protein_coding	Glutaminase deficiency with impaired intellectual development and progressive ataxia	618412
+TR31879	chr3:63912684-63912714	GCA	10	CDS	ATXN7	protein_coding	Spinocerebellar ataxia 7	164500
+TR31880	chr3:63912714-63912726	GCC	4	CDS	ATXN7	protein_coding	Spinocerebellar ataxia 7	164500
+TR32	chr1:1435798-1435818	GGCGCGGAGC	2	CDS	VWA1	protein_coding	Hereditary motor neuropathy	619216
+TR3445	chr1:57367043-57367118	AAAAT	15	intron	DAB1	protein_coding	Spinocerebellar ataxia 37	615945
+TR35563	chr3:129172576-129172656	CAGG	20	intron	CNBP	protein_coding	Myotonic dystrophy 2	602668
+TR35564	chr3:129172576-129172656	CAGA	10	intron	CNBP	protein_coding	Myotonic dystrophy 2	602668
+TR35565	chr3:129172696-129172732	CA	18	intron	CNBP	protein_coding	Myotonic dystrophy 2	602668
+TR36092	chr3:138946020-138946062	NGC	14	CDS	FOXL2	protein_coding	Blepharophimosis, ptosis, and epicanthus inversus syndrome	110100
+TR38932	chr3:183712187-183712222	TTTTA	7	intron	YEATS2	protein_coding	Familial adult myoclonic epilepsy 4	615127
+TR40017	chr4:3074876-3074933	CAG	19	CDS	HTT	protein_coding	Huntington's disease	143100
+TR40018	chr4:3074939-3074966	CCG	9	CDS	HTT	protein_coding	Huntington's disease	143100
+TR42349	chr4:39348424-39348479	AARRG	11	intron	RFC1	protein_coding	Cerebellar ataxia, neuropathy, and vestibular areflexia syndrome	614575
+TR42548	chr4:41745972-41746032	GCN	20	CDS	PHOX2B	protein_coding	Central hypoventilation syndrome	209880
+TR49300	chr4:159342526-159342616	TTTTA	18	intron	RAPGEF2	protein_coding	Familial adult myoclonic epilepsy 7	618075
+TR51895	chr5:10356346-10356411	ATTTT	13	intron	MARCHF6	protein_coding	Familial adult myoclonic epilepsy 3	613608
+TR59714	chr5:146878727-146878757	GCT	10	five_prime_UTR	PPP2R2B	protein_coding	Spinocerebellar ataxia 12	604326
+TR63118	chr6:16327633-16327723	TGC	30	CDS	ATXN1	protein_coding	Spinocerebellar ataxia 1	164400
+TR65117	chr6:45422750-45422792	GCN	14	CDS	RUNX2	protein_coding	Cleidocranial dysplasia	119600
+TR72502	chr6:170561906-170562017	GCA	37	CDS	TBP	protein_coding	Spinocerebellar ataxia 17	607136
+TR74136	chr7:27199678-27199732	NGC	18	CDS	HOXA13	protein_coding	Hand-foot-genital syndrome	140000
+TR74137	chr7:27199825-27199861	NGC	12	CDS	HOXA13	protein_coding	Hand-foot-genital syndrome	140000
+TR74138	chr7:27199924-27199966	NGC	14	CDS	HOXA13	protein_coding	Hand-foot-genital syndrome	140000
+TR7525	chr1:149390802-149390841	GGC	13	five_prime_UTR	NOTCH2NLC	protein_coding	Neuronal intranuclear inclusion disease	603472
+TR88348	chr8:104588970-104588997	CGC	9	five_prime_UTR	LRP12	protein_coding	Oculopharyngodistal myopathy 1	164310
+TR89226	chr8:118366815-118366880	TAAAA	13	intron	ENSG00000225885	lncRNA	Familial adult myoclonic epilepsy 1	NULL
+TR92417	chr9:27573528-27573546	GGCCCC	3	intron	C9orf72	protein_coding	Amyotrophic lateral sclerosis, frontotemporal dementia	105550
+TR93516	chr9:69037286-69037304	GAA	6	intron	FXN	protein_coding	Friedreich ataxia	229300
+TR97506	chr9:130681606-130681639	GCC	11	CDS	PRDM12	protein_coding	Hereditary sensory and autonomic neuropathy type VIII	616488
