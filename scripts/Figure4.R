@@ -1,3 +1,5 @@
+library(tidyverse)
+library(dplyr)
 
 #so, lets count motifs from both alleles
 total_with_row_number <- total %>%
@@ -5,6 +7,25 @@ total_with_row_number <- total %>%
 
 STR_table_motif <- STR_table[c("gene", "benign_motif_reference_orientation",
                                "unknown_motif_reference_orientation")]
+
+
+longreadmotifcounts <- tibble(
+  gene = c("YEATS2",
+           "RAPGEF2","C9orf72","XYLT1",
+           "RFC1","FGF14","BEAN1",
+           "STARD7","SAMD12","ZFHX3"),
+  UniqueMotifCount = c(3L, 2L, 3L, 7L, 17L, 2L, 3L, 10L, 2L, 3L),
+  motif = c("TTTAT,TTATG,TGTTA",
+             "TTTAT,TTATG","GCCCCG,ACCGCA,CCCCGGGCCCGC",
+             "GCC,CGCGG,GGGCGC,GC,AGG,AGGCGGG,AGGG",
+             "GAAAG,GGGAA,AAAGG,GGAAAG,GGAA,AAAGGG,AGGAA,A,AAGAG,GAAAA,GAAGA,AAGGG,GGGAAGGAA,GGAAAA,GGAAA,AAGGA","AGC,GAA",
+             "ATAAC,ATAAA,A",
+             "AAATAAATAAAATA,AAAAT,AAATAAAATAACATA,AAAAG,ACAAA,AACAT,ATAAC,AACAC",
+             "ATAAC,AATßAA","CCGCCGCCACTGCCA,GCCACT,CCG")
+)
+
+longreadmotifcounts$motif <- sapply(longreadmotifcounts$motif, function(x) normalise_str(as.character(x)))
+
 
 
 #normalize motifs
@@ -46,7 +67,7 @@ unique_motif_counts <- motifs_by_allele %>%
 
 # more than 1 is more interesting
 unique_motif_counts <- unique_motif_counts %>%
-  filter(UniqueMotifCount != 1)
+  dplyr::filter(UniqueMotifCount != 1)
 
 unique_motif_counts_long <- unique_motif_counts %>%
   mutate(motif = strsplit(as.character(motif), ",")) %>%
@@ -54,7 +75,6 @@ unique_motif_counts_long <- unique_motif_counts %>%
 
 ##merge it
 unique_motif_counts_long <- merge(unique_motif_counts_long, STR_table_motif)
-
 
 unique_motif_counts_long$classification <- apply(unique_motif_counts_long, 1, function(row) {
   m <- row['motif']
@@ -89,24 +109,92 @@ ggplot(unique_motif_counts_long, aes(x = gene, fill = classification)) +
 
 
 
-longread_uniquemotifcounts <- data.frame(
-  stringsAsFactors = FALSE,
-              Gene = c("ATXN7","CNBP",
-                       "YEATS2","HTT","PHOX2B",
-                       "TBP","FXN","C9orf72",
-                       "ATXN8OS","PABPN1","XYLT1",
-                       "RFC1","NOP56","FGF14",
-                       "BEAN1","STARD7","SAMD12","ZFHX3",
-                       "NOTCH2NLC","RAPGEF2"),
-  UniqueMotifCount = c(2L,3L,3L,4L,2L,2L,3L,3L,
-                       2L,2L,7L,17L,2L,2L,3L,10L,2L,3L,2L,2L),
-            motif = c("GCC, CAG",
-                       "AC,AGGCAGGCAGGCAGGCAGGCAGGCAGGCAGAC,AGGC","TTTAT,TTATG,TGTTA",
-                       "AGC,GCC,CCT,CCG","GCT,GCC","CAA,CAG","GAA,AAG,A",
-                       "GCCCCG,ACCGCA,CCCCGGGCCCGC","CTG,CTA","GCA,GCG",
-                       "GCC,CGCGG,GGGCGC,GC,AGG,AGGCGGG,AGGG",
-                       "GAAAG,GGGAA,AAAGG,GGAAAG,GGAA,AAAGGG,AGGAA,A,AAGAG,GAAAA,GAAGA,AAGGG,GGGAAGGAA,GGAAAA,GGAAA,AAAGA,AAGGA",
-                       "GCCTGG,GCCTGC","AGC,GAA","ATAAC,ATAAA,A",
-                       "AAATAAATAAAATA,ATAAA,AAAAT,AAATAAAATAACATA,AAAAG,ACAAA,AACAT,ATAAC,AAATA,AACAC","ATAAC,AATAA",
-                       "CCGCCGCCACTGCCA,GCCACT,CCG","GGA,GCG","TTTAT,TTATG")
-)
+
+#### lr for long reads
+lr_unique_motif_counts_long <- longreadmotifcounts %>%
+  mutate(motif = strsplit(as.character(motif), ",")) %>%
+  unnest(motif)
+
+##merge it
+lr_unique_motif_counts_long <- merge(lr_unique_motif_counts_long, STR_table_motif)
+
+
+lr_unique_motif_counts_long$classification <- apply(lr_unique_motif_counts_long, 1, function(row) {
+  m <- row['motif']
+  if (any(m == unlist(strsplit(row['repeatunit_ref_normalized'], ',')))) {
+    return("ref")
+  } else if (any(m == unlist(strsplit(row['unknown_motif_reference_orientation'], ',')))) {
+    return("unknown")
+  } else if (any(m == unlist(strsplit(row['repeatunit_path_normalized'], ',')))) {
+    return("path")
+  } else if (any(m == unlist(strsplit(row['benign_motif_reference_orientation'], ',')))) {
+    return("benign")
+  } else {
+    return("NEW_MOTIF?")
+  }
+})
+
+
+# Reorder levels of classification factor
+lr_unique_motif_counts_long$classification <- factor(lr_unique_motif_counts_long$classification,
+                                                  levels = c("path", "unknown", "benign", "ref"))
+
+# Plot with reordered levels
+ggplot(lr_unique_motif_counts_long, aes(x = gene, fill = classification)) +
+  geom_bar() +
+  labs(x = "Gene", y = "LR Unique Motif Count", fill = "Classification") +
+  theme_minimal() +
+  scale_fill_manual(values = c("benign" = "#00c7d5", "ref" = "darkblue", "unknown" = "lightgray", "path" = "#FD6853"),
+                    labels = c("benign"= "Benign",
+                               "ref" = "Reference",
+                               "unknown" = "Unknown",
+                               "path" = "Pathogenic"))
+
+
+
+# Get common genes
+common_genes <- intersect(longreadmotifcounts$gene, unique_motif_counts$gene)
+
+lr_unique_motif_counts_filtered <- lr_unique_motif_counts_long %>%
+  filter(gene %in% common_genes)
+
+unique_motif_counts_filtered <- unique_motif_counts_long %>%
+  filter(gene %in% common_genes)
+
+# Add source column to lr_unique_motif_counts_filtered and unique_motif_counts_filtered
+lr_unique_motif_counts_filtered$source <- "lr_unique_motif_counts"
+unique_motif_counts_filtered$source <- "unique_motif_counts"
+
+# Add suffixes to the gene column in each data frame
+lr_unique_motif_counts_filtered$gene <- paste(lr_unique_motif_counts_filtered$gene, "_lr", sep = "")
+unique_motif_counts_filtered$gene <- paste(unique_motif_counts_filtered$gene, "_unique", sep = "")
+
+# Merge the data frames with suffixes
+merged_df <- rbind(lr_unique_motif_counts_filtered, unique_motif_counts_filtered)
+
+ggplot(merged_df, aes(x = gene, fill = classification)) +
+  geom_bar() +
+  geom_text(data = merged_df[grepl("_lr$", merged_df$gene), ],
+            aes(x = gene,
+                y = (max(UniqueMotifCount))*0.5,
+                label = "LR"),
+            vjust = -0.5,
+            size = 6,
+            color = "black") +
+  geom_text(data = merged_df[grepl("_unique$", merged_df$gene), ],
+            aes(x = gene,
+                y = (max(UniqueMotifCount))*0.45,
+                label = "gnomAD"),
+            vjust = -0.5,
+            size = 4,
+            color = "black") +
+  labs(fill = "Classification") +
+  scale_fill_manual(values = c("benign" = "#00c7d5", "ref" = "darkblue", "unknown" = "lightgray", "path" = "#FD6853"),
+                    labels = c("benign"= "Benign",
+                               "ref" = "Reference",
+                               "unknown" = "Unknown",
+                               "path" = "Pathogenic")) +
+  theme(legend.position = "top",
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+
