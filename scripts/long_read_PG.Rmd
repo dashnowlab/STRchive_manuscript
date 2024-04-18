@@ -126,7 +126,7 @@ lr100_motif_counts$gene <- gsub("^.+_", "", lr100_motif_counts$gene)
 # 
 
 lr100_motif_edited <- lr100_motif_counts %>%
-  select(-c("LocusMotifgene", "Motif"))  %>%
+  select(-c("LocusMotifId", "Motif"))  %>%
   mutate(AlleleIndex = ifelse(AlleleIndex == 0, "Allele1", 
                                ifelse(AlleleIndex == 1, "Allele2", AlleleIndex)))  
 
@@ -143,8 +143,8 @@ lr100_motif_edited <- lr100_motif_edited %>%
     values_fill = list(Allele2LowerBound = NA, Allele1LowerBound = NA)) %>%
     #select(-c(AlleleIndex, Motif, MotifCount)) %>%
     distinct() %>%# Remove unnecessary columns 
-    rename(Allele1LowerBound = Allele2) %>%
-    rename(Allele2LowerBound = Allele1)
+    rename(Allele1LowerBound = Allele1) %>%
+    rename(Allele2LowerBound = Allele2)
 
 
 
@@ -251,8 +251,7 @@ AR_result <- merge(AR_result, AR_result3)
 XR_XX_total_sex <- subset(total_prev, Inheritance == "XR" & Sex == "XX")
 XR_XX_Allele21_greater_than_path_min <- (XR_XX_total_sex$Allele1LowerBound >= XR_XX_total_sex$pathogenic_min) & 
   (XR_XX_total_sex$Allele2LowerBound >= XR_XX_total_sex$pathogenic_min) 
-XR_XX_Allele2_greater_than_path_min <- (XR_XX_total_sex$Allele1LowerBound < XR_XX_total_sex$pathogenic_min) & 
-  (XR_XX_total_sex$Allele2LowerBound >= XR_XX_total_sex$pathogenic_min) 
+XR_XX_Allele2_greater_than_path_min <- (XR_XX_total_sex$Allele1LowerBound < XR_XX_total_sex$pathogenic_min) & (XR_XX_total_sex$Allele2LowerBound >= XR_XX_total_sex$pathogenic_min) 
 XR_XX_result1 <- aggregate(cbind(XR_XX_Allele21_greater_than_path_min), by = list(XR_XX_total_sex$gene), FUN = sum, na.rm=TRUE)
 XR_XX_result2 <- aggregate(cbind(XR_XX_Allele2_greater_than_path_min), by = list(XR_XX_total_sex$gene), FUN = sum, na.rm=TRUE)
 XR_XX_result3 <- aggregate(cbind(XR_XX_total_sex$Allele1), by = list(XR_XX_total_sex$gene,XR_XX_total_sex$Inheritance), FUN = function(x) sum(!is.na(x)))
@@ -260,11 +259,12 @@ XR_XX_result <- merge(XR_XX_result1, XR_XX_result2)
 XR_XX_result <- merge(XR_XX_result, XR_XX_result3)
 
 XR_XY_total_sex <- subset(total_prev, Inheritance == "XR" & Sex == "XY")
+
 XR_XY_Allele1_greater_than_path_min <- (XR_XY_total_sex$Allele1LowerBound >= XR_XY_total_sex$pathogenic_min) 
-XR_XY_Allele2_greater_than_path_min <- XR_XY_total_sex$Allele2LowerBound >= XR_XY_total_sex$pathogenic_min 
-XR_XY_Allele_greater_than_path_min <- XR_XY_Allele1_greater_than_path_min | XR_XY_Allele2_greater_than_path_min
+XR_XY_Allele2_greater_than_path_min <- (XR_XY_total_sex$Allele2LowerBound >= XR_XY_total_sex$pathogenic_min) 
+XR_XY_Allele_greater_than_path_min <- (XR_XY_Allele1_greater_than_path_min | XR_XY_Allele2_greater_than_path_min)
 XR_XY_result1 <- aggregate(cbind(XR_XY_Allele_greater_than_path_min), by = list(XR_XY_total_sex$gene), FUN = sum, na.rm=TRUE)
-XR_XY_result2 <- aggregate(cbind(XR_XY_total_sex$Allele2LowerBound), by = list(XR_XY_total_sex$gene, XR_XY_total_sex$Inheritance), FUN = function(x) sum(!is.na(x)))
+XR_XY_result2 <- aggregate(cbind(XR_XY_total_sex$Allele1LowerBound), by = list(XR_XY_total_sex$gene, XR_XY_total_sex$Inheritance), FUN = function(x) sum(!is.na(x)))
 XR_XY_result <- merge(XR_XY_result1, XR_XY_result2)
 
 XD_total_sex <- subset(total_prev, Inheritance == "XD")
