@@ -1,9 +1,7 @@
 library(RColorBrewer)
 library(waffle)
-library(RColorBrewer)
-library(waffle)
 
-### Figure 2A
+### Figure 1A
 # Generate 5 shades of blue
 blue_palette <- colorRampPalette(c("#ADD8E6", "#6495ED", "#4169E1", "#0000FF", "#00008B"))(5)
 
@@ -147,7 +145,7 @@ type_counts <- sort(table(STR_table_coding$type2), decreasing = TRUE)
 waffle(type_counts, rows = 5, size = 2, colors = qual_palette,
        title = "Coding Subtypes", flip = TRUE, reverse = TRUE, legend = "bottom")
 
-### Figure 2B
+### Figure 1B
 STR_table_adjusted <- STR_table %>%
   mutate(
     normal_min = coalesce(normal_min, normal_max),
@@ -242,7 +240,7 @@ STR_table_adjusted$path_max_bp = STR_table_adjusted$pathogenic_max * STR_table_a
 
 ggplot(STR_table_adjusted, aes(x = gene)) +
   geom_linerange(aes(ymin = norm_max_bp, ymax = path_max_bp, color = "gray"),
-                 linewidth = 1.5, linetype = "dotted", alpha = 0.3) +
+                 linewidth = 1.5, linetype = "dotted", alpha = 0.4) +
   geom_linerange(aes(ymin = path_min_bp, ymax = path_max_bp, color = 'Pathogenic'), linewidth = 1.5) +
   geom_point(data = subset(STR_table_adjusted, int_min_bp == int_max_bp), aes(y = int_min_bp), shape = 16, color= "#E7B800", size = 2) +
   geom_point(data = subset(STR_table_adjusted, path_min_bp == path_max_bp), aes(y = path_min_bp), shape = 16, color = "#FC4E07", size = 2) +
@@ -250,9 +248,11 @@ ggplot(STR_table_adjusted, aes(x = gene)) +
   geom_linerange(aes(ymin = norm_min_bp+0.9, ymax = norm_max_bp, color = 'Normal'), linewidth = 1.5) +
   geom_linerange(aes(ymin = int_min_bp, ymax = int_max_bp, color = 'Intermediate*'), linewidth = 1.5) +
   scale_y_continuous(name = 'Allele size in base pairs', trans = 'log10') +
-  scale_x_discrete(name = 'Disease') +
+  scale_x_discrete(name = 'Gene') +
   scale_colour_manual(values = c('Normal' = '#00AFBB', 'Intermediate*' = '#E7B800', 'Pathogenic' = '#FC4E07'),
                       breaks = c('Normal', 'Intermediate*', 'Pathogenic'),
                       name = 'Allele size') +
   theme(panel.grid.major.x = element_line(color = 'lightgrey', linetype = 'longdash')) +
-  coord_flip()
+  coord_flip() +
+  theme_minimal()
+
