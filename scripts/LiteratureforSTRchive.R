@@ -1,12 +1,12 @@
 library(biomaRt)
 library(rentrez)
-library(dplyr)
 # solution for potential error based on library versions
 #devtools::install_version("dbplyr", version = "2.3.4")
 #library(dbplyr)
 library(easyPubMed)
 library(stringr)
-
+library(dplyr)
+library(jsonlite)
 
 ### Data Setup
 # change to STRchive directory
@@ -79,7 +79,7 @@ consolidated_strings <- gene_info %>%
 consolidated_strings <- gsub("BMD", "Becker muscular dystrophy", consolidated_strings)
 
 #where results will be stored
-base_directory <- '/Users/quinlan/Documents/Git/STRchive_manuscript/data/literature/'
+base_directory <- '/Users/quinlan/Documents/Git/STRchive/data/'
 
 # function to perform the pubmed query
 # Function printout includes gene name and if there are results, confirms
@@ -158,47 +158,56 @@ for (gene_name in names(file_paths)) {
   })
 }
 
-#let's extract publication information through a function
-extract_pub_info <- function(medline_data_list, gene_name) {
+# empty list for the pubication info
+pub_info_list <- list()
+
+extract_citation_info <- function(medline_data_list, gene_name) {
   # Combine the list of XML strings into a single string
   medline_string <- paste(medline_data_list, collapse = "")
 
-  # Use regular expressions to extract PMID and publication years
+  # Use regular expressions to extract PMID, publication years, and titles
   # Extract PMIDs
   pmids <- str_extract_all(medline_string, "(?<=PMID- )\\d+")[[1]]
+  print(pmids)
+  # Extract Publication Dates
+  publication_dates <- str_extract_all(medline_string, "(?<=DP  - )\\d+")[[1]]
+  print(publication_dates)
+  # Extract Titles
+  title <- str_extract_all(medline_string, "(?<=TI  - ).+?(?=\\.|\\?)")[[1]]
+  print(title)
 
-  # Extract Publication Years
-  publication_years <- str_extract_all(medline_string, "(?<=EDAT- )\\d{4}")[[1]]
-
-  # Ensure both vectors have the same length
-  length_diff <- length(pmids) - length(publication_years)
+  # Ensure all vectors have the same length
+  length_diff <- length(pmids) - length(publication_dates)
   if (length_diff > 0) {
-    publication_years <- c(publication_years, rep(NA, length_diff))
+    publication_dates <- c(publication_dates, rep(NA, length_diff))
   } else if (length_diff < 0) {
     pmids <- c(pmids, rep(NA, -length_diff))
   }
 
-  # Create a dataframe with gene_name, PMID, and PublicationYear
+  length_diff <- length(pmids) - length(title)
+  if (length_diff > 0) {
+    title <- c(title, rep(NA, length_diff))
+  } else if (length_diff < 0) {
+    pmids <- c(pmids, rep(NA, -length_diff))
+  }
+
+  # Create a dataframe with gene_name, PMID, PublicationYear, and Title
   pub_info_df <- data.frame(GeneName = rep(gene_name, length(pmids)),
                             PMID = pmids,
-                            PublicationYear = publication_years,
+                            PublicationDate = publication_dates,
+                            Title = title,
                             stringsAsFactors = FALSE)
 
   return(pub_info_df)
 }
 
 
-# empty list for the pubication info
-pub_info_list <- list()
-
-# Loop through each gene_name in all_publications
-# print to make sure each gene is processed
 for (gene_name in names(all_publications)) {
   # Get the list of XML data for the current gene_name
   medline_data_list <- all_publications[[gene_name]]
   print(gene_name)
   # Extract publication information using the function
-  pub_info_df <- extract_pub_info(medline_data_list, gene_name)
+  pub_info_df <- extract_citation_info(medline_data_list, gene_name)
 
   # Append the results to the list
   pub_info_list[[gene_name]] <- pub_info_df
@@ -207,12 +216,23 @@ for (gene_name in names(all_publications)) {
 # Combine all the dataframes into a single dataframe
 all_pub_info_df <- do.call(rbind, pub_info_list)
 
-# Get the current date for a unique name
-current_date <- format(Sys.Date(), "%Y%m%d")
+# Group the data frame by GeneName and convert each group to a list
+grouped_data <- split(all_pub_info_df, all_pub_info_df$GeneName)
 
-# Concatenate the date to the file name
-file_name <- paste0("/Users/quinlan/Documents/Git/STRchive_manuscript/data/all_pub_info_", current_date, ".tsv")
+# Convert each group to a JSON object and combine them into a list (entry of PMID with Date and Title)
+json_list <- lapply(grouped_data, function(df) {
+  lapply(split(df, df$PMID), function(sub_df) {
+    lapply(1:nrow(sub_df), function(row_index) {
+      list(
+        PublicationDate = sub_df$PublicationDate[row_index],
+        Title = sub_df$Title[row_index]
+      )
+    })
+  })
+})
 
-# Write the table with the updated file name
-write.table(all_pub_info_df, file_name, sep = "\t", quote = FALSE, row.names = FALSE)
+# Convert the list of JSON objects to a JSON string
+json_string <- toJSON(json_list, pretty = TRUE)
 
+# Write the JSON string to a file
+write(json_string, file = "/Users/quinlan/Documents/Git/STRchive_manuscript/data/STRchive_literature_PMID.json")

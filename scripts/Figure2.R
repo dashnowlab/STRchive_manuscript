@@ -150,5 +150,3 @@ ggplot(merged_data, aes(x = MinPublicationYear, y = TotalPMIDs, label = GeneName
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 14),
         axis.text.y = element_text(size = 14))
-
-
