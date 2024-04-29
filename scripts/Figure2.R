@@ -1,6 +1,9 @@
 library(ggplot2)
 library(ggrepel)
 library(scales)
+library(ggplot2)
+library(ggrepel)
+library(scales)
 
 #can upload data from file path or use all_pub_info_df
 # either can be generated from AutomatedLiteratureRetrieval.R
@@ -150,3 +153,111 @@ ggplot(merged_data, aes(x = MinPublicationYear, y = TotalPMIDs, label = GeneName
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 14),
         axis.text.y = element_text(size = 14))
+
+# what doesn't come up in our data bc of data types (2/6) or abstract not indexed (1/6)
+merged_df$PublicationYear[merged_df$PMID == 7951322] <- 1994
+# ATXN1
+merged_df$PublicationYear[merged_df$PMID == 11486088] <- 2001
+# CNBP
+merged_df$PublicationYear[merged_df$PMID == 10581021] <- 1999
+# PPP2R2B
+
+# what doesn't come up because of key words not in abstract
+merged_df$PublicationYear[merged_df$PMID == 26005867] <- 2015
+# PRDM12
+merged_df$PublicationYear[merged_df$PMID == 12428212] <- 2002
+# SOX3
+merged_df$PublicationYear[merged_df$PMID == 19948535] <- 2010
+# TBX1
+
+merged_df <- merged_df %>%
+  rename(EarliestPublicationYear = PublicationYear)
+
+all_pub_info_df$PublicationYear <- as.numeric(all_pub_info_df$PublicationYear)
+
+# Join 'earliest_years' with 'all_pmids' based on 'gene_name'
+merged_df <- inner_join(merged_df, all_pub_info_df, by = "GeneName")
+
+# Filter out rows where Publicationyear is earlier than the EarliestPublicationYear
+filtered_df <- merged_df %>%
+  filter(PublicationYear >= EarliestPublicationYear)
+
+# ensure numeric for comparison
+filtered_df$PMID.y <- as.numeric(filtered_df$PMID.y)
+
+# Find the PMID.x values that are not present in PMID.y, add'em in
+missing_pmids <- anti_join(filtered_df, filtered_df %>% select(PMID.y),
+                           by = c("PMID.x" = "PMID.y"))
+
+# Create a new dataframe with the missing PMIDs and EarliestPublicationYear
+# this should be (and currently is) the 6 we didn't find from earlier
+new_rows <- missing_pmids %>%
+  mutate(PMID.y = PMID.x, PublicationYear = EarliestPublicationYear) %>%
+  distinct()
+
+# Append the new rows to the original dataframe
+filtered_df <- bind_rows(filtered_df, new_rows)
+
+# evidence by number of independent observations
+evidence <- data.frame(
+  GeneName = c("AFF2", "AFF3", "AR", "ARX", "ATN1", "ATXN1", "ATXN10", "ATXN2", "ATXN3",
+               "ATXN7", "ATXN8OS", "BEAN1", "C9orf72", "CACNA1A", "CBL", "COMP", "DAB1",
+               "DIP2B", "DMD", "DMPK", "FMR1", "FOXL2", "FXN", "GIPC1", "GLS", "HOXA13",
+               "HOXD13", "HTT", "JPH3", "LRP12", "MARCHF6", "NOP56", "NIPA1", "NOTCH2NLC",
+               "NUTM2B-AS1", "PABPN1", "PHOX2B", "POLG", "PPP2R2B", "PRDM12", "RAPGEF2", "RFC1",
+               "RILPL1", "RUNX2", "SAMD12", "SOX3", "STARD7", "TBP", "TBX1", "TCF4", "TNRC6A",
+               "XYLT1", "YEATS2", "ZIC2", "ZIC3", "ZNF713", "CNBP", "CSTB", "EIF4A3", "PRNP",
+               "VWA1", "ABCD3", "FGF14", "ZFHX3", "THAP11"
+  ),
+  ind_obs = c("100 > x > 50","< 10","> 100","50 > x > 10","100 > x > 50",
+              "> 100","100 > x > 50","> 100","> 100","> 100","> 100","> 100",
+              "> 100","> 100","< 10","< 10","50 > x > 10","< 10","< 10","> 100","> 100",
+              "50 > x > 10","> 100","50 > x > 10","< 10","< 10","< 10","> 100",
+              "100 > x > 50","100 > x > 50","> 100","100 > x > 50","> 100","> 100","< 10","> 100",
+              "> 100","> 100","> 100","< 10","< 10","> 100","50 > x > 10","< 10","> 100","< 10",
+              "50 > x > 10","100 > x > 50","< 10","> 100","< 10","50 > x > 10","< 10","50 > x > 10",
+              "< 10","< 10","> 100","> 100","50 > x > 10","> 100","50 > x > 10","< 10","> 100",
+              "50 > x > 10","< 10"))
+
+# summary of PMIDS and years
+summary_data <- filtered_df %>%
+  group_by(GeneName) %>%
+  summarize(MinPublicationYear = min(PublicationYear, na.rm = TRUE), MaxPublicationYear = max(PublicationYear, na.rm = TRUE),
+            TotalPMIDs = n_distinct(PMID.y))
+
+#merge data for final plot
+merged_data <- merge(evidence, summary_data, by = "GeneName", all.x = FALSE)
+
+#create ordered labels for legend
+labels <- c("< 10" = "< 10", "50 > x > 10" = "10 < x < 50",
+            "100 > x > 50" = "50 < x < 100", "> 100" = "> 100")
+
+limits <- c("< 10", "50 > x > 10", "100 > x > 50", "> 100")
+
+#final plot
+library(ggplot2)
+
+ggplot(merged_data, aes(x = MinPublicationYear, y = TotalPMIDs, label = GeneName)) +
+  geom_jitter(aes(size = ind_obs, color = ind_obs), width = 0.5) +
+  geom_text_repel(data = subset(summary_data, !duplicated(GeneName)), aes(label = GeneName),
+                  box.padding = 0.5, segment.color = "grey50", segment.size = 0.2,
+                  nudge_y = 0.1, size = 5) +
+  labs(title = "Minimum Publication Year by Total Number of Unique PMIDs",
+       x = "Minimum Publication Year",
+       y = "Total Number of Unique PMIDs (log scale)",
+       size = "Ind. Obs.") +
+  scale_y_log10() +
+  scale_size_manual(values = c("< 10" = 2, "50 > x > 10" = 3,
+                               "100 > x > 50" = 4, "> 100" = 6),
+                    limits = limits,
+                    labels = labels) +
+  scale_color_manual(values = c("< 10" = "gray", "50 > x > 10" = "#DDCC77",
+                                "100 > x > 50" = "#88CCEE", "> 100" = "#332288"),
+                     limits = limits, labels = labels,
+                     name = "Ind. Obs.") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 20)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 14),
+        axis.text.y = element_text(size = 14))
+
+
