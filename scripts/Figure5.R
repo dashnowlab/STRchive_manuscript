@@ -13,8 +13,8 @@
 
 ### If we exclude CNG
 color_labels <- c('black', 'black', 'black', 'black', 'black',
-                  'black', 'black', 'black', 'blue','black', 'black', 'black', 'black', 'black', 'black',
-                  'purple', 'lightpink', 'orange')
+                  'black', 'black', 'black', 'black','black', 'black', 'black', 'black', 'black', 'black',
+                  'black', 'black', 'black')
 
 ### If we include CNG
 # color_labels <- c('black', 'black', 'black', 'black', 'black',
@@ -42,7 +42,8 @@ ggplot(data = filter(combined_df, !is.na(combined_df$prevalence)), aes(x = reord
         plot.title = element_text(hjust = 0.5)) +
   coord_flip() +
   theme(axis.text.y = element_text(colour = color_labels)) +
-  scale_y_continuous(sec.axis = dup_axis())
+  scale_y_continuous(sec.axis = dup_axis()) +
+  theme_minimal()
 
 
 
@@ -57,7 +58,8 @@ ggplot(data = filter(combined_df, !is.na(combined_df$prevalence)), aes(x = reord
   theme(axis.text.y = element_text(colour = color_labels)) +
   scale_y_continuous(sec.axis = dup_axis()) +
   ylim(0,0.64) +
-  theme(axis.text.y = element_text(colour = color_labels))
+  theme(axis.text.y = element_text(colour = color_labels)) +
+  theme_minimal()
 
 
 ### plots overlaid with legend in PowerPoint File available in Data
