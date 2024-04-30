@@ -17,7 +17,7 @@ library(ggridges)
 library(DescTools)
 library(Biostrings)
 library(plotly)
-library(ggbreak) 
+library(ggbreak)
 library(patchwork)
 theme_set(theme_cowplot())
 options(stringsAsFactors = FALSE)
@@ -66,31 +66,31 @@ normalise_str <- function(in_dna) {
   } else {
     in_dna <- list(in_dna)  # Convert single string to list
   }
-  
+
   result <- character(length(in_dna))  # Initialize result vector
-  
+
   for (i in seq_along(in_dna)) {
     dna <- in_dna[i]
-    
+
     if (is.null(dna) || length(dna) == 0) {
       result[i] <- ''  # Return empty string for NULL or empty input
     } else {
       # Generate all circular permutations of input sequence
-      all_possible <- sapply(0:(nchar(dna)-1), function(j) 
+      all_possible <- sapply(0:(nchar(dna)-1), function(j)
         paste0(substr(dna, j+1, nchar(dna)), substr(dna, 1, j)))
-      
+
       # Sort permutations alphabetically and return the first
       result[i] <- sort(all_possible)[1]
     }
   }
-  
+
   return(paste(result, collapse = ","))  # Combine result elements with commas
 }
 
 
 
 # toy <- gnomADSTRcalls[sample(nrow(gnomADSTRcalls), 20), ]
-# 
+#
 # toy$motif_norm <- sapply(toy$MotifLargest, function(x) normalise_str(as.character(x)))
 
 normalise_call <- function(in_dna) {
@@ -112,7 +112,7 @@ normalise_call <- function(in_dna) {
 All samples have all loci, so that's nice.
 ```{r prep longread files}
 
-lr100_motif_counts = read.csv('/Users/quinlan/Downloads/all_samples.motif_counts.tsv', sep = '\t', stringsAsFactors = FALSE)
+lr100_motif_counts = read.csv('HGPRC.motif_counts.tsv', sep = '\t', stringsAsFactors = FALSE)
 
 lr100_motif_counts <- lr100_motif_counts %>%
   rename(gene= Locus)
@@ -123,12 +123,12 @@ lr100_motif_counts$gene <- gsub("^.+_", "", lr100_motif_counts$gene)
 # sample_id_counts <- lr100_motif_counts %>%
 #   group_by(Sample) %>%
 #   summarise(Unique_gene_Count = n_distinct(gene))
-# 
+#
 
 lr100_motif_edited <- lr100_motif_counts %>%
   select(-c("LocusMotifId", "Motif"))  %>%
-  mutate(AlleleIndex = ifelse(AlleleIndex == 0, "Allele1", 
-                               ifelse(AlleleIndex == 1, "Allele2", AlleleIndex)))  
+  mutate(AlleleIndex = ifelse(AlleleIndex == 0, "Allele1",
+                               ifelse(AlleleIndex == 1, "Allele2", AlleleIndex)))
 
 lr100_motif_edited$MotifCount[lr100_motif_edited$MotifCount == "."] <- NA
 
@@ -139,10 +139,10 @@ lr100_motif_edited$MotifCount[lr100_motif_edited$MotifCount == "."] <- NA
 lr100_motif_edited <- lr100_motif_edited %>%
   pivot_wider(
     names_from = AlleleIndex,
-    values_from = MotifCount, 
+    values_from = MotifCount,
     values_fill = list(Allele2LowerBound = NA, Allele1LowerBound = NA)) %>%
     #select(-c(AlleleIndex, Motif, MotifCount)) %>%
-    distinct() %>%# Remove unnecessary columns 
+    distinct() %>%# Remove unnecessary columns
     rename(Allele1LowerBound = Allele1) %>%
     rename(Allele2LowerBound = Allele2)
 
@@ -224,7 +224,7 @@ total_prev <- total_prev %>%
 total_prev$repeatunit_path_normalized_list <- strsplit(as.character(total_prev$repeatunit_path_normalized), ",")
 
 AD_total <- subset(total_prev, Inheritance == "AD")
-AD_Allele2_greater_than_path_min <- (AD_total$Allele2LowerBound >= AD_total$pathogenic_min) 
+AD_Allele2_greater_than_path_min <- (AD_total$Allele2LowerBound >= AD_total$pathogenic_min)
 AD_result1 <- aggregate(cbind(AD_Allele2_greater_than_path_min), by = list(AD_total$gene), FUN = sum, na.rm=TRUE)
 AD_result2 <- aggregate(cbind(AD_total$Allele2LowerBound), by = list(AD_total$gene, AD_total$Inheritance), FUN = function(x) sum(!is.na(x)))
 AD_result <- merge(AD_result1, AD_result2)
@@ -234,10 +234,10 @@ AR_total <- subset(total_prev, Inheritance == "AR")
 # path result if we're NOT doing contraction for VWA1
 AR_total <- AR_total %>%
   mutate(pathogenic_min = ifelse(gene == "VWA1", 3, pathogenic_min))
-AR_Allele21_greater_than_path_min <- (AR_total$Allele2LowerBound >= AR_total$pathogenic_min) & 
-  (AR_total$Allele1LowerBound >= AR_total$pathogenic_min) 
-AR_Allele2_greater_than_path_min <- (AR_total$Allele2LowerBound >= AR_total$pathogenic_min) & 
-  (AR_total$Allele1LowerBound < AR_total$pathogenic_min) 
+AR_Allele21_greater_than_path_min <- (AR_total$Allele2LowerBound >= AR_total$pathogenic_min) &
+  (AR_total$Allele1LowerBound >= AR_total$pathogenic_min)
+AR_Allele2_greater_than_path_min <- (AR_total$Allele2LowerBound >= AR_total$pathogenic_min) &
+  (AR_total$Allele1LowerBound < AR_total$pathogenic_min)
 AR_result1 <- aggregate(cbind(AR_Allele21_greater_than_path_min), by = list(AR_total$gene), FUN = sum, na.rm=TRUE)
 ### pathogenic result for VWA1, which is deviation, not contraction
 #AR_result1$AR_Allele21_greater_than_path_min[AR_result1$Group.1 == "VWA1"] <- sum(subset(AR_total, gene == "VWA1" & Allele1 != 2 & Allele2 != 2 & (AR_total$motif_norm == AR_total$repeatunit_path_normalized))$gene == "VWA1")
@@ -249,9 +249,9 @@ AR_result <- merge(AR_result1, AR_result2)
 AR_result <- merge(AR_result, AR_result3)
 
 XR_XX_total_sex <- subset(total_prev, Inheritance == "XR" & Sex == "XX")
-XR_XX_Allele21_greater_than_path_min <- (XR_XX_total_sex$Allele1LowerBound >= XR_XX_total_sex$pathogenic_min) & 
-  (XR_XX_total_sex$Allele2LowerBound >= XR_XX_total_sex$pathogenic_min) 
-XR_XX_Allele2_greater_than_path_min <- (XR_XX_total_sex$Allele1LowerBound < XR_XX_total_sex$pathogenic_min) & (XR_XX_total_sex$Allele2LowerBound >= XR_XX_total_sex$pathogenic_min) 
+XR_XX_Allele21_greater_than_path_min <- (XR_XX_total_sex$Allele1LowerBound >= XR_XX_total_sex$pathogenic_min) &
+  (XR_XX_total_sex$Allele2LowerBound >= XR_XX_total_sex$pathogenic_min)
+XR_XX_Allele2_greater_than_path_min <- (XR_XX_total_sex$Allele1LowerBound < XR_XX_total_sex$pathogenic_min) & (XR_XX_total_sex$Allele2LowerBound >= XR_XX_total_sex$pathogenic_min)
 XR_XX_result1 <- aggregate(cbind(XR_XX_Allele21_greater_than_path_min), by = list(XR_XX_total_sex$gene), FUN = sum, na.rm=TRUE)
 XR_XX_result2 <- aggregate(cbind(XR_XX_Allele2_greater_than_path_min), by = list(XR_XX_total_sex$gene), FUN = sum, na.rm=TRUE)
 XR_XX_result3 <- aggregate(cbind(XR_XX_total_sex$Allele1LowerBound), by = list(XR_XX_total_sex$gene,XR_XX_total_sex$Inheritance), FUN = function(x) sum(!is.na(x)))
@@ -260,16 +260,16 @@ XR_XX_result <- merge(XR_XX_result, XR_XX_result3)
 
 XR_XY_total_sex <- subset(total_prev, Inheritance == "XR" & Sex == "XY")
 
-XR_XY_Allele1_greater_than_path_min <- (XR_XY_total_sex$Allele1LowerBound >= XR_XY_total_sex$pathogenic_min) 
-XR_XY_Allele2_greater_than_path_min <- (XR_XY_total_sex$Allele2LowerBound >= XR_XY_total_sex$pathogenic_min) 
+XR_XY_Allele1_greater_than_path_min <- (XR_XY_total_sex$Allele1LowerBound >= XR_XY_total_sex$pathogenic_min)
+XR_XY_Allele2_greater_than_path_min <- (XR_XY_total_sex$Allele2LowerBound >= XR_XY_total_sex$pathogenic_min)
 XR_XY_Allele_greater_than_path_min <- (XR_XY_Allele1_greater_than_path_min | XR_XY_Allele2_greater_than_path_min)
 XR_XY_result1 <- aggregate(cbind(XR_XY_Allele_greater_than_path_min), by = list(XR_XY_total_sex$gene), FUN = sum, na.rm=TRUE)
 XR_XY_result2 <- aggregate(cbind(XR_XY_total_sex$Allele1LowerBound), by = list(XR_XY_total_sex$gene, XR_XY_total_sex$Inheritance), FUN = function(x) sum(!is.na(x)))
 XR_XY_result <- merge(XR_XY_result1, XR_XY_result2)
 
 XD_total_sex <- subset(total_prev, Inheritance == "XD")
-XD_Allele_greater_than_path_min <- (XD_total_sex$Allele1LowerBound >= XD_total_sex$pathogenic_min)  | 
-                                      ((XD_total_sex$Allele2LowerBound >= XD_total_sex$pathogenic_min)) 
+XD_Allele_greater_than_path_min <- (XD_total_sex$Allele1LowerBound >= XD_total_sex$pathogenic_min)  |
+                                      ((XD_total_sex$Allele2LowerBound >= XD_total_sex$pathogenic_min))
 XD_result1 <- aggregate(cbind(XD_Allele_greater_than_path_min), by = list(XD_total_sex$gene), FUN = sum, na.rm=TRUE)
 XD_result2 <- aggregate(cbind(XD_total_sex$Allele1LowerBound), by = list(XD_total_sex$gene, XD_total_sex$Inheritance), FUN = function(x) sum(!is.na(x)))
 XD_result <- merge(XD_result1, XD_result2)
@@ -312,16 +312,16 @@ You can also embed plots, for example:
 
 ```{r pressure, fig.height = 10}
 ggplot(total, aes(x = factor(gene), y = Allele2LowerBound)) +
-  geom_violin(scale = "width", width = 0.9, 
+  geom_violin(scale = "width", width = 0.9,
               position = position_dodge(width = 0.9 / length(unique(total$gene))),
               alpha = 1) +
-  geom_rect(aes(xmin = as.numeric(factor(gene)) - 0.5, xmax = as.numeric(factor(gene)) + 0.5, 
+  geom_rect(aes(xmin = as.numeric(factor(gene)) - 0.5, xmax = as.numeric(factor(gene)) + 0.5,
                 ymin = normal_min, ymax = normal_max), fill = "#00c7d5") +
-  geom_rect(aes(xmin = as.numeric(factor(gene)) - 0.5, xmax = as.numeric(factor(gene)) + 0.5, 
+  geom_rect(aes(xmin = as.numeric(factor(gene)) - 0.5, xmax = as.numeric(factor(gene)) + 0.5,
                 ymin = intermediate_min, ymax = intermediate_max), fill = "#FFCB01") +
-  geom_rect(aes(xmin = as.numeric(factor(gene)) - 0.5, xmax = as.numeric(factor(gene)) + 0.5, 
+  geom_rect(aes(xmin = as.numeric(factor(gene)) - 0.5, xmax = as.numeric(factor(gene)) + 0.5,
                 ymin = pathogenic_min, ymax = pathogenic_max+0.5), fill = "#FD6853") +
-  geom_violin(fill = "black", scale = "width", width = 0.9, 
+  geom_violin(fill = "black", scale = "width", width = 0.9,
               position = position_dodge(width = 0.9 / length(unique(total$Id))),
               alpha = 1) +
   labs(title = "Allelic Distribution by Gene",
