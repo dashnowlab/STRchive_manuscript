@@ -5876,6 +5876,18 @@
         "Title": ["CAG repeat mosaicism is gene specific in spinocerebellar ataxias"]
       }
     ],
+    "38642323": [
+      {
+        "PublicationDate": ["2024"],
+        "Title": ["Rare association between spinocerebellar ataxia and amyotrophic lateral       sclerosis: a case series"]
+      }
+    ],
+    "38667292": [
+      {
+        "PublicationDate": ["2024"],
+        "Title": ["Investigating Repeat Expansions in NIPA1, NOP56, and NOTCH2NLC Genes: A Closer       Look at Amyotrophic Lateral Sclerosis Patients from Southern Italy"]
+      }
+    ],
     "7477379": [
       {
         "PublicationDate": ["1995"],
@@ -8818,6 +8830,12 @@
       {
         "PublicationDate": ["2024"],
         "Title": ["CAG repeat mosaicism is gene specific in spinocerebellar ataxias"]
+      }
+    ],
+    "38673939": [
+      {
+        "PublicationDate": ["2024"],
+        "Title": ["AAV-Mediated CAG-Targeting Selectively Reduces Polyglutamine-Expanded Protein and       Attenuates Disease Phenotypes in a Spinocerebellar Ataxia Mouse Model"]
       }
     ],
     "8908515": [
@@ -14830,6 +14848,30 @@
       {
         "PublicationDate": ["2024"],
         "Title": ["Genetic diagnosis and detection rates using C9orf72 repeat expansion and a       multi-gene panel in amyotrophic lateral sclerosis"]
+      }
+    ],
+    "38641715": [
+      {
+        "PublicationDate": ["2024"],
+        "Title": ["Abundant transcriptomic alterations in the human cerebellum of patients with a       C9orf72 repeat expansion"]
+      }
+    ],
+    "38658168": [
+      {
+        "PublicationDate": ["2024"],
+        "Title": ["C9ORF72 deficiency results in neurodegeneration in the zebrafish retina"]
+      }
+    ],
+    "38667292": [
+      {
+        "PublicationDate": ["2024"],
+        "Title": ["Investigating Repeat Expansions in NIPA1, NOP56, and NOTCH2NLC Genes: A Closer       Look at Amyotrophic Lateral Sclerosis Patients from Southern Italy"]
+      }
+    ],
+    "38684907": [
+      {
+        "PublicationDate": ["2024"],
+        "Title": ["Glucose hypometabolism prompts RAN translation and exacerbates C9orf72-related       ALS/FTD phenotypes"]
       }
     ]
   },
@@ -30182,12 +30224,6 @@
         "Title": ["Cognitive phenotype and neurodegeneration associated with Tau in Huntington's       disease"]
       }
     ],
-    "38563485": [
-      {
-        "PublicationDate": ["2024"],
-        "Title": ["Solid-state nuclear magnetic resonance in the structural study of polyglutamine       aggregation"]
-      }
-    ],
     "38585669": [
       {
         "PublicationDate": ["2024"],
@@ -30210,6 +30246,12 @@
       {
         "PublicationDate": ["2024"],
         "Title": ["Longitudinal alterations in brain perfusion and vascular reactivity in the       zQ175DN mouse model of Huntington's disease"]
+      }
+    ],
+    "38660915": [
+      {
+        "PublicationDate": ["2024"],
+        "Title": ["Copper enhances aggregational toxicity of mutant huntingtin in a Drosophila model       of Huntington's Disease"]
       }
     ],
     "7477379": [
@@ -31234,6 +31276,12 @@
         "Title": ["Genetic variability in sporadic amyotrophic lateral sclerosis"]
       }
     ],
+    "38667292": [
+      {
+        "PublicationDate": ["2024"],
+        "Title": ["Investigating Repeat Expansions in NIPA1, NOP56, and NOTCH2NLC Genes: A Closer       Look at Amyotrophic Lateral Sclerosis Patients from Southern Italy"]
+      }
+    ],
     "9736780": [
       {
         "PublicationDate": ["1998"],
@@ -31426,6 +31474,12 @@
       {
         "PublicationDate": ["2024"],
         "Title": ["Early-onset familial essential tremor is associated with nucleotide expansions of       spinocerebellar ataxia in China"]
+      }
+    ],
+    "38667292": [
+      {
+        "PublicationDate": ["2024"],
+        "Title": ["Investigating Repeat Expansions in NIPA1, NOP56, and NOTCH2NLC Genes: A Closer       Look at Amyotrophic Lateral Sclerosis Patients from Southern Italy"]
       }
     ]
   },
@@ -32112,6 +32166,12 @@
       {
         "PublicationDate": ["2024"],
         "Title": ["Neuronal intranuclear inclusion disease in New Zealand: A novel discovery"]
+      }
+    ],
+    "38667292": [
+      {
+        "PublicationDate": ["2024"],
+        "Title": ["Investigating Repeat Expansions in NIPA1, NOP56, and NOTCH2NLC Genes: A Closer       Look at Amyotrophic Lateral Sclerosis Patients from Southern Italy"]
       }
     ]
   },
@@ -34970,6 +35030,12 @@
       {
         "PublicationDate": ["2024"],
         "Title": ["FGF14 GAA repeat expansion and ZFHX3 GGC repeat expansion in clinically diagnosed       multiple system atrophy patients"]
+      }
+    ],
+    "38684900": [
+      {
+        "PublicationDate": ["2024"],
+        "Title": ["A GGC-repeat expansion in ZFHX3 encoding polyglycine causes spinocerebellar       ataxia type 4 and impairs autophagy"]
       }
     ]
   },

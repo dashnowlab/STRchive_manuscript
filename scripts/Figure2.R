@@ -7,7 +7,7 @@ library(scales)
 
 #can upload data from file path or use all_pub_info_df
 # either can be generated from AutomatedLiteratureRetrieval.R
- file_path <- "/Users/quinlan/Documents/Git/STRchive/data/all_pub_info_20240404.tsv"
+ file_path <- "/Users/quinlan/Documents/Git/STRchive/data/all_pub_info_20240415.tsv"
  #
  all_pub_info_df <- read.table(file_path, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
 
@@ -186,7 +186,7 @@ filtered_df <- merged_df %>%
 filtered_df$PMID.y <- as.numeric(filtered_df$PMID.y)
 
 # Find the PMID.x values that are not present in PMID.y, add'em in
-missing_pmids <- anti_join(filtered_df, filtered_df %>% select(PMID.y),
+missing_pmids <- anti_join(filtered_df, filtered_df %>% dplyr::select(PMID.y),
                            by = c("PMID.x" = "PMID.y"))
 
 # Create a new dataframe with the missing PMIDs and EarliestPublicationYear
