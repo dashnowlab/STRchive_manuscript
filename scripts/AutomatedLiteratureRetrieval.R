@@ -10,7 +10,7 @@ library(stringr)
 
 ### Data Setup
 # change to STRchive directory
-data <- read.csv('/Users/quinlan/Documents/Git/STRchive/data/STR-disease-loci.csv',
+data <- read.csv('/Users/quinlan/Documents/Git/STRchive_manuscript/data/STR-disease-loci.csv',
                  stringsAsFactors = FALSE)
 
 # Filter out NA values, if there are any, from the 'gene' column

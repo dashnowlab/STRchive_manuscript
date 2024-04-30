@@ -79,7 +79,7 @@ consolidated_strings <- gene_info %>%
 consolidated_strings <- gsub("BMD", "Becker muscular dystrophy", consolidated_strings)
 
 #where results will be stored
-base_directory <- '/Users/quinlan/Documents/Git/STRchive/data/'
+base_directory <- '/Users/quinlan/Documents/Git/STRchive_manuscript/data/literature'
 
 # function to perform the pubmed query
 # Function printout includes gene name and if there are results, confirms

@@ -7,7 +7,7 @@ library(scales)
 
 #can upload data from file path or use all_pub_info_df
 # either can be generated from AutomatedLiteratureRetrieval.R
- file_path <- "/Users/quinlan/Documents/Git/STRchive/data/all_pub_info_20240415.tsv"
+ file_path <- "/Users/quinlan/Documents/Git/STRchive_manuscript/data/all_pub_info_20240430.tsv"
  #
  all_pub_info_df <- read.table(file_path, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
 
