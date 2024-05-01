@@ -241,7 +241,7 @@ ggplot(merged_data, aes(x = MinPublicationYear, y = TotalPMIDs, label = GeneName
   geom_jitter(aes(size = ind_obs, color = ind_obs), width = 0.5) +
   geom_text_repel(data = subset(summary_data, !duplicated(GeneName)), aes(label = GeneName),
                   box.padding = 0.5, segment.color = "grey50", segment.size = 0.2,
-                  nudge_y = 0.1, size = 5) +
+                  nudge_y = 0.1, size = 5, fontface = "italic") +
   labs(title = "Minimum Publication Year by Total Number of Unique PMIDs",
        x = "Minimum Publication Year",
        y = "Total Number of Unique PMIDs (log scale)",

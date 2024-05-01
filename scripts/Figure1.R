@@ -23,7 +23,7 @@ ggplot(STR_table, aes(x = type, fill = as.character(length_characters))) +
   geom_bar() +
   labs(title = "Genomic Regions and Motif Length",
        x = "Genomic Region Type",
-       y = "Count") +
+       y = "Number of Loci") +
   scale_fill_manual(values = blue_palette, name = "Motif Length", limits = limits) +
   theme_minimal()
 
@@ -175,84 +175,24 @@ STR_table_adjusted$path_max_bp = STR_table_adjusted$pathogenic_max * STR_table_a
 
 ### presumably, I'm going to remove untrustworthy data
 
-genes_to_remove <- c("DMD", "ZIC3", "TNR6CA", "YEATS2", "TBX1", "POLG")
-
-STR_table_adjusted <- STR_table_adjusted %>%
-  filter(!gene %in% genes_to_remove)
-
 ggplot(STR_table_adjusted, aes(x = gene)) +
+  theme_minimal() +
   geom_linerange(aes(ymin = norm_max_bp, ymax = path_max_bp, color = "gray"),
-                 linewidth = 1.5, linetype = "dotted", alpha = 0.3) +
+                 linewidth = 0.5, linetype = "dotted", alpha = 0.7) +
   geom_linerange(aes(ymin = path_min_bp, ymax = path_max_bp, color = 'Pathogenic'), linewidth = 1.5) +
   geom_point(data = subset(STR_table_adjusted, int_min_bp == int_max_bp), aes(y = int_min_bp), shape = 16, color= "#E7B800", size = 2) +
   geom_point(data = subset(STR_table_adjusted, path_min_bp == path_max_bp), aes(y = path_min_bp), shape = 16, color = "#FC4E07", size = 2) +
   geom_point(data = subset(STR_table_adjusted, norm_min_bp == norm_max_bp), aes(y = norm_min_bp), shape = 16, color= "#00AFBB", size = 2) +
   geom_linerange(aes(ymin = norm_min_bp+0.9, ymax = norm_max_bp, color = 'Normal'), linewidth = 1.5) +
   geom_linerange(aes(ymin = int_min_bp, ymax = int_max_bp, color = 'Intermediate*'), linewidth = 1.5) +
-  scale_y_continuous(name = 'Allele size in base pairs', trans = 'log10') +
-  scale_x_discrete(name = 'Disease') +
-  scale_colour_manual(values = c('Normal' = '#00AFBB', 'Intermediate*' = '#E7B800', 'Pathogenic' = '#FC4E07'),
-                      breaks = c('Normal', 'Intermediate*', 'Pathogenic'),
-                      name = 'Allele size') +
-  theme(panel.grid.major.x = element_line(color = 'lightgrey', linetype = 'longdash')) +
-  coord_flip()
-# Generate a qualitative color palette with 5 colors
-qual_palette <- brewer.pal(5, "Set2")
-
-# Display the color palette
-qual_palette
-
-# Plot the pie chart with labels
-type_counts <- sort(table(STR_table_coding$type2), decreasing = TRUE)
-
-waffle(type_counts, rows = 5, size = 2, colors = qual_palette,
-       title = "Coding Subtypes", flip = TRUE, reverse = TRUE, legend = "bottom")
-
-### Figure 2B
-STR_table_adjusted <- STR_table %>%
-  mutate(
-    normal_min = coalesce(normal_min, normal_max),
-    pathogenic_max = coalesce(pathogenic_max, pathogenic_min)
-  )
-
-STR_table_adjusted <- STR_table_adjusted %>%
-  mutate(
-    normal_min = ifelse(gene == "MARCHF6", 0, normal_min),
-    normal_max = ifelse(gene == "MARCHF6", 0, normal_max)
-  )
-
-# PMID: 20399836
-STR_table_adjusted <- STR_table_adjusted %>%
-  mutate(
-    pathogenic_min = ifelse(gene == "POLG", 6, pathogenic_min),
-    pathogenic_max = ifelse(gene == "POLG", 14, pathogenic_max)
-  )
-
-STR_table_adjusted$norm_min_bp = STR_table_adjusted$normal_min * STR_table_adjusted$repeatunitlen
-STR_table_adjusted$norm_max_bp = STR_table_adjusted$normal_max * STR_table_adjusted$repeatunitlen
-STR_table_adjusted$int_min_bp = STR_table_adjusted$intermediate_min * STR_table_adjusted$repeatunitlen
-STR_table_adjusted$int_max_bp = STR_table_adjusted$intermediate_max * STR_table_adjusted$repeatunitlen
-STR_table_adjusted$path_min_bp = STR_table_adjusted$pathogenic_min * STR_table_adjusted$repeatunitlen
-STR_table_adjusted$path_max_bp = STR_table_adjusted$pathogenic_max * STR_table_adjusted$repeatunitlen
-
-
-### presumably, I'm going to remove untrustworthy data
-
-ggplot(STR_table_adjusted, aes(x = gene)) +
-  geom_linerange(aes(ymin = norm_max_bp, ymax = path_max_bp, color = "gray"),
-                 linewidth = 0.5, linetype = "dotted", alpha = 0.4) +
-  geom_linerange(aes(ymin = path_min_bp, ymax = path_max_bp, color = 'Pathogenic'), linewidth = 1.5) +
-  geom_point(data = subset(STR_table_adjusted, int_min_bp == int_max_bp), aes(y = int_min_bp), shape = 16, color= "#E7B800", size = 2) +
-  geom_point(data = subset(STR_table_adjusted, path_min_bp == path_max_bp), aes(y = path_min_bp), shape = 16, color = "#FC4E07", size = 2) +
-  geom_point(data = subset(STR_table_adjusted, norm_min_bp == norm_max_bp), aes(y = norm_min_bp), shape = 16, color= "#00AFBB", size = 2) +
-  geom_linerange(aes(ymin = norm_min_bp+0.9, ymax = norm_max_bp, color = 'Normal'), linewidth = 1.5) +
-  geom_linerange(aes(ymin = int_min_bp, ymax = int_max_bp, color = 'Intermediate*'), linewidth = 1.5) +
-  scale_y_continuous(name = 'Allele size in base pairs', trans = 'log10') +
+  scale_y_continuous(trans = 'log10') +
   scale_x_discrete(name = 'Gene') +
   scale_colour_manual(values = c('Normal' = '#00AFBB', 'Intermediate*' = '#E7B800', 'Pathogenic' = '#FC4E07'),
                       breaks = c('Normal', 'Intermediate*', 'Pathogenic'),
                       name = 'Allele size') +
-  theme(panel.grid.major.x = element_line(color = 'lightgrey', linetype = 'longdash')) +
-  coord_flip() +
-  theme_minimal()
+  theme(panel.grid.major.x = element_line(color = 'lightgrey', linetype = 'longdash'),
+        axis.title.x = element_text(size=20)) +
+  labs(y = "Allele Size in Base Pairs") +
+  coord_flip()
+
 
