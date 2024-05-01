@@ -240,7 +240,7 @@ STR_table_adjusted$path_max_bp = STR_table_adjusted$pathogenic_max * STR_table_a
 
 ggplot(STR_table_adjusted, aes(x = gene)) +
   geom_linerange(aes(ymin = norm_max_bp, ymax = path_max_bp, color = "gray"),
-                 linewidth = 1.5, linetype = "dotted", alpha = 0.4) +
+                 linewidth = 0.5, linetype = "dotted", alpha = 0.4) +
   geom_linerange(aes(ymin = path_min_bp, ymax = path_max_bp, color = 'Pathogenic'), linewidth = 1.5) +
   geom_point(data = subset(STR_table_adjusted, int_min_bp == int_max_bp), aes(y = int_min_bp), shape = 16, color= "#E7B800", size = 2) +
   geom_point(data = subset(STR_table_adjusted, path_min_bp == path_max_bp), aes(y = path_min_bp), shape = 16, color = "#FC4E07", size = 2) +
