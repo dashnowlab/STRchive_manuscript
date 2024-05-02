@@ -21,10 +21,9 @@ STR_table <- STR_table %>%
 # Plot
 ggplot(STR_table, aes(x = type, fill = factor(as.character(length_characters), levels = limits))) +
   geom_bar() +
-  labs(title = "Genomic Regions and Motif Length",
-       x = "Genomic Region Type",
-       y = "Number of Loci") +
-  scale_fill_manual(values = blue_palette, name = "Motif Length", limits = limits) +
+  labs(x = "Genomic region type",
+       y = "Number of loci") +
+  scale_fill_manual(values = blue_palette, name = "Motif length", limits = limits) +
   theme_minimal()
 
 #Further determining by coding subtype; taken from literature review
