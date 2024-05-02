@@ -242,9 +242,9 @@ ggplot(merged_data, aes(x = MinPublicationYear, y = TotalPMIDs, label = GeneName
   geom_jitter(aes(size = ind_obs, color = ind_obs), width = 0.5) +
   geom_text_repel(data = subset(summary_data, !duplicated(GeneName)), aes(label = GeneName),
                   box.padding = 0.5, segment.color = "grey50", segment.size = 0.2,
-                  nudge_y = 0.1, size = 5, fontface = "italic") +
-  labs(x = "Minimum Publication Year",
-       y = "Total Number of Unique PMIDs (log scale)",
+                  nudge_y = 0.05, size = 5, fontface = "italic") +
+  labs(x = "Year of earliest indexed publication",
+       y = "Total number of unique PMIDs (log scale)",
        size = "Ind. Obs.") +
   scale_y_log10() +
   scale_size_manual(values = c("< 10" = 2, "50 > x > 10" = 3,
@@ -256,11 +256,10 @@ ggplot(merged_data, aes(x = MinPublicationYear, y = TotalPMIDs, label = GeneName
                      limits = limits, labels = labels,
                      name = "Ind. Obs.") +
   scale_x_continuous(breaks = scales::pretty_breaks(n = 20)) +
-
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 14),
         axis.text.y = element_text(size = 14),
-        axis.title.x.bottom = element_text(size=20,face="bold"),
-        axis.title.y = element_text(size=20,face="bold"),
+        axis.title.x.bottom = element_text(size=20),
+        axis.title.y = element_text(size=20),
         )
 
 
