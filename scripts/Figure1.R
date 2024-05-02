@@ -19,7 +19,7 @@ STR_table <- STR_table %>%
   mutate(type = ifelse(gene == 'POLG', 'Coding', type))
 
 # Plot
-ggplot(STR_table, aes(x = type, fill = as.character(length_characters))) +
+ggplot(STR_table, aes(x = type, fill = factor(as.character(length_characters), levels = limits))) +
   geom_bar() +
   labs(title = "Genomic Regions and Motif Length",
        x = "Genomic Region Type",
