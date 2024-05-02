@@ -191,7 +191,7 @@ ggplot(STR_table_adjusted, aes(x = gene)) +
                       name = 'Allele size') +
   theme(panel.grid.major.x = element_line(color = 'lightgrey', linetype = 'longdash'),
         axis.title.x = element_text(size=20)) +
-  labs(y = "Allele Size in Base Pairs") +
+  labs(y = "Allele size in base pairs") +
   coord_flip()
 
 
