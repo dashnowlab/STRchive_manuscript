@@ -3,7 +3,10 @@ library(waffle)
 
 ### Figure 1A
 # Generate 5 shades of blue
-blue_palette <- colorRampPalette(c("#ADD8E6", "#6495ED", "#4169E1", "#0000FF", "#00008B"))(5)
+#blue_palette <- colorRampPalette(c("#ADD8E6", "#6495ED", "#4169E1", "#0000FF", "#00008B"))(5)
+
+blue_palette <- colorRampPalette(c("lightgray", "#ADD8E6", "#4169E1", "#00008B", "black"))(5)
+
 
 # Count the number of characters in pathogenic_motif_reference_orientation
 STR_table$length_characters <- str_length(STR_table$pathogenic_motif_reference_orientation)
@@ -135,4 +138,4 @@ ggplot(STR_table_adjusted, aes(x = gene)) +
   labs(y = "Allele size in base pairs") +
   coord_flip()
 
-
+#panels put into same figure in Adobe Illustrator
