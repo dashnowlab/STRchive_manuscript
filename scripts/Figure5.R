@@ -161,7 +161,22 @@ RFC1_motif_counts_motif_info <- RFC1_motif_counts_motif_info %>%
     TRUE ~ NA_real_  # Sets to NA if no condition matches
   ))
 
-ggplot(RFC1_motif_counts_motif_info, aes(x = factor(motif), y = allelesize, fill = classification)) +
+ordered_motifs <- RFC1_motif_counts_motif_info %>%
+  group_by(motif, classification) %>%
+  summarise(median_allelesize = median(allelesize, na.rm = TRUE)) %>%
+  arrange(classification, median_allelesize) %>%
+  pull(motif)
+
+# Convert 'motif' to a factor with levels based on the order calculated
+RFC1_motif_counts_motif_info$motif <- factor(RFC1_motif_counts_motif_info$motif, levels = ordered_motifs)
+
+# Reverse the order of classification explicitly to put "ref" first and "path" last
+classification_levels <- c("ref", "benign", "unknown", "path")
+RFC1_motif_counts_motif_info$classification <- factor(RFC1_motif_counts_motif_info$classification,
+                                                      levels = classification_levels)
+
+# Create the boxplot
+ggplot(RFC1_motif_counts_motif_info, aes(x = motif, y = allelesize, fill = classification)) +
   geom_boxplot(alpha = 0.8) +
   labs(x = "Motif", y = "Allele Length (repeats)") +
   theme_minimal() +
@@ -174,7 +189,6 @@ ggplot(RFC1_motif_counts_motif_info, aes(x = factor(motif), y = allelesize, fill
                                "ref" = "Reference",
                                "unknown" = "Unknown",
                                "path" = "Pathogenic"))
-
 # #### lr for long reads
 lr_unique_motif_counts_long <- longreadmotifcounts %>%
   mutate(motif = strsplit(as.character(motif), ",")) %>%
