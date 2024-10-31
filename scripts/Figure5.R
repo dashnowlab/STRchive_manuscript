@@ -109,49 +109,71 @@ ggplot(unique_motif_counts_long, aes(x = gene, fill = classification)) +
 
 
 ### RFC1 analysis
-# motifs_by_allele <- total_prev_with_row_number %>%
-#   select(gene, motif_norm, motif_norm_small, row_number) %>%
-#   pivot_longer(cols = c(motif_norm, motif_norm_small), names_to = "motif_type", values_to = "motif")
-#
-# RFC1_motif_counts <- subset(motifs_by_allele, motifs_by_allele$gene == 'RFC1')
-#
-# RFC1_motif_counts_motif_info <- merge(RFC1_motif_counts, STR_table_motif, by = "gene")
-#
-#
-# RFC1_motif_counts_motif_info$classification <- apply(RFC1_motif_counts_motif_info, 1, function(row) {
-#   m <- row['motif']
-#   if (any(m == unlist(strsplit(row['repeatunit_ref_normalized'], ',')))) {
-#     return("ref")
-#   } else if (any(m == unlist(strsplit(row['unknown_motif_reference_orientation'], ',')))) {
-#     return("unknown")
-#   } else if (any(m == unlist(strsplit(row['repeatunit_path_normalized'], ',')))) {
-#     return("path")
-#   } else if (any(m == unlist(strsplit(row['benign_motif_reference_orientation'], ',')))) {
-#     return("benign")
-#   } else {
-#     return("NEW_MOTIF?")
-#   }
-# })
-#
-#
-#
-# # Reorder levels of classification factor
-# RFC1_motif_counts_motif_info$classification <- factor(RFC1_motif_counts_motif_info$classification,
-#                                                       levels = c("path", "unknown", "benign", "ref"))
-#
-# ggplot(RFC1_motif_counts_motif_info, aes(x=motif, fill = classification)) +
-#   geom_histogram(stat = "count") + scale_y_log10() +
-#   labs(title = "Motif Counts for RFC1", x = "Motif", y = "Frequency") +
-#   theme_minimal() +
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10),  # Adjust size as needed
-#         axis.text.y = element_text(size = 14),  # Adjust size as needed
-#         axis.title.y = element_text(size = 16)) +
-#   scale_fill_manual(values = c("benign" = "#00c7d5", "ref" = "darkblue", "unknown" = "lightgray", "path" = "#FD6853"),
-#                     labels = c("benign"= "Benign",
-#                                "ref" = "Reference",
-#                                "unknown" = "Unknown",
-#                                "path" = "Pathogenic"))
+motifs_by_allele <- total_with_row_number %>%
+  select(gene, motif_norm, motif_norm_small, row_number, Allele2LowerBound, Allele1LowerBound) %>%
+  pivot_longer(cols = c(motif_norm, motif_norm_small), names_to = "motif_type", values_to = "motif")
 
+RFC1_motif_counts <- subset(motifs_by_allele, motifs_by_allele$gene == 'RFC1')
+
+RFC1_motif_counts_motif_info <- merge(RFC1_motif_counts, STR_table_motif, by = "gene")
+
+
+RFC1_motif_counts_motif_info$classification <- apply(RFC1_motif_counts_motif_info, 1, function(row) {
+  m <- row['motif']
+  if (any(m == unlist(strsplit(row['repeatunit_ref_normalized'], ',')))) {
+    return("ref")
+  } else if (any(m == unlist(strsplit(row['unknown_motif_reference_orientation'], ',')))) {
+    return("unknown")
+  } else if (any(m == unlist(strsplit(row['repeatunit_path_normalized'], ',')))) {
+    return("path")
+  } else if (any(m == unlist(strsplit(row['benign_motif_reference_orientation'], ',')))) {
+    return("benign")
+  } else {
+    return("NEW_MOTIF?")
+  }
+})
+
+
+
+# # Reorder levels of classification factor
+RFC1_motif_counts_motif_info$classification <- factor(RFC1_motif_counts_motif_info$classification,
+                                                      levels = c("path", "unknown", "benign", "ref"))
+
+ggplot(RFC1_motif_counts_motif_info, aes(x=motif, fill = classification)) +
+  geom_histogram(stat = "count") + scale_y_log10() +
+  labs(title = "Motif Counts for RFC1", x = "Motif", y = "Frequency") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10),  # Adjust size as needed
+        axis.text.y = element_text(size = 14),  # Adjust size as needed
+        axis.title.y = element_text(size = 16)) +
+  scale_fill_manual(values = c("benign" = "#00c7d5", "ref" = "darkblue", "unknown" = "lightgray", "path" = "#FD6853"),
+                    labels = c("benign"= "Benign",
+                               "ref" = "Reference",
+                               "unknown" = "Unknown",
+                               "path" = "Pathogenic"))
+
+
+# make allelesize based on conditions
+RFC1_motif_counts_motif_info <- RFC1_motif_counts_motif_info %>%
+  mutate(allelesize = case_when(
+    motif_type == "motif_norm" ~ Allele2LowerBound,
+    motif_type == "motif_norm_small" ~ Allele1LowerBound,
+    TRUE ~ NA_real_  # Sets to NA if no condition matches
+  ))
+
+ggplot(RFC1_motif_counts_motif_info, aes(x = factor(motif), y = allelesize, fill = classification)) +
+  geom_boxplot(alpha = 0.8) +
+  labs(x = "Motif", y = "Allele Length (repeats)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("benign" = "#00c7d5",
+                               "ref" = "darkblue",
+                               "unknown" = "lightgray",
+                               "path" = "#FD6853"),
+                    labels = c("benign" = "Benign",
+                               "ref" = "Reference",
+                               "unknown" = "Unknown",
+                               "path" = "Pathogenic"))
 
 # #### lr for long reads
 # lr_unique_motif_counts_long <- longreadmotifcounts %>%
