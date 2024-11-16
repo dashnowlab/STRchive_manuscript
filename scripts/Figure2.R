@@ -31,7 +31,7 @@ firstpub <- data.frame(
            19587282L,7842016L,7951322L,11017075L,8896556L,
            7874163L,8908515L,10192387L,19878914L,22154785L,9371901L,
            7603564L,9887340L,9126745L,28686858L,17236128L,
-           27417533L,8288237L,24360810L,36516086L,1605194L,
+           27417533L,1310900L,24360810L,36516086L,1605194L,
            15591279L,8596916L,32413282L,30970188L,15385446L,11543619L,
            8401589L,11694876L,31332380L,31664039L,31286297L,
            21683323L,31332380L,31332380L,9462747L,12640453L,
@@ -48,7 +48,7 @@ merged_df <- merge(firstpub, all_pub_info_df[, c("GeneName", "PMID", "Publicatio
                    by = c("GeneName", "PMID"),
                    all.x = TRUE)  # 'all.x = TRUE' retains all rows from 'firstpub'
 
-# what doesn't come up in our data bc of data types (2/6) or abstract not indexed (1/6)
+# what doesn't come up in our data bc of data types (2/7) or abstract not indexed (1/7)
 merged_df$PublicationYear[merged_df$PMID == 7951322] <- 1994
 # ATXN1
 merged_df$PublicationYear[merged_df$PMID == 11486088] <- 2001
@@ -63,6 +63,8 @@ merged_df$PublicationYear[merged_df$PMID == 12428212] <- 2002
 # SOX3
 merged_df$PublicationYear[merged_df$PMID == 19948535] <- 2010
 # TBX1
+merged_df$PublicationYear[merged_df$PMID == 1310900] <- 1992
+#DMPK
 
 merged_df <- merged_df %>%
   rename(EarliestPublicationYear = PublicationYear)
