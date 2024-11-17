@@ -32,12 +32,12 @@ firstpub <- data.frame(
            7874163L,8908515L,10192387L,19878914L,22154785L,9371901L,
            7603564L,9887340L,9126745L,28686858L,17236128L,
            27417533L,1310900L,24360810L,36516086L,1605194L,
-           12529855L,8596916L,32413282L,30970188L,15385446L,11543619L,
+           12529855L,8596916L,32413282L,30970188L,15385446L,8614804L,
            8401589L,11694876L,31332380L,31664039L,31286297L,
            21683323L,31332380L,31332380L,9462747L,12640453L,
-           22963882L,12805114L,30351492L,31230722L,35700120L,
-           26220009L,30351492L,31664034L,10484774L,23185296L,24677642L,
-           30351492L,33559681L,30554721L,31539032L,38035881L,
+           22963882L,1683708L,29507423L,31230722L, 35148830L,
+           26220009L,29507423L,31664034L,10484774L,23185296L,24677642L,
+           29507423L,33559681L,30554721L,31539032L,38035881L,
            11285244L,20452998L,25196122L,11486088L,10581021L,12428212L,
            19948535L,26005867)
 )
@@ -48,7 +48,7 @@ merged_df <- merge(firstpub, all_pub_info_df[, c("GeneName", "PMID", "Publicatio
                    by = c("GeneName", "PMID"),
                    all.x = TRUE)  # 'all.x = TRUE' retains all rows from 'firstpub'
 
-# what doesn't come up in our data bc of data types (2/8) or abstract not indexed (1/8)
+# what doesn't come up in our data bc of data types (2) or abstract not indexed (1)
 merged_df$PublicationYear[merged_df$PMID == 7951322] <- 1994
 # ATXN1
 merged_df$PublicationYear[merged_df$PMID == 11486088] <- 2001
@@ -66,7 +66,12 @@ merged_df$PublicationYear[merged_df$PMID == 19948535] <- 2010
 merged_df$PublicationYear[merged_df$PMID == 1310900] <- 1992
 #DMPK
 merged_df$PublicationYear[merged_df$PMID == 12529855] <- 2003
-# 2003
+# FOXL2
+merged_df$PublicationYear[merged_df$PMID == 8614804] <- 1996
+# HOXD13
+
+#note: The final HOXA13 locus was characterized in the 2004 PMID here,
+# but a 2000 manuscript identifed an expansion in the third tract (PMID:10839976)
 
 merged_df <- merged_df %>%
   rename(EarliestPublicationYear = PublicationYear)
