@@ -70,6 +70,9 @@ merged_df$PublicationYear[merged_df$PMID == 12529855] <- 2003
 merged_df$PublicationYear[merged_df$PMID == 8614804] <- 1996
 # HOXD13
 
+merged_df$PublicationYear[merged_df$PMID == 38035881] <- 2023
+# fixing pubmed index bug that has wrong year for this PMID
+
 #note: The final HOXA13 locus was characterized in the 2004 PMID here,
 # but a 2000 manuscript identifed an expansion in the third tract (PMID:10839976)
 
