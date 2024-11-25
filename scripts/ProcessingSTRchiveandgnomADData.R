@@ -12,6 +12,7 @@ library(Biostrings)
 library(plotly)
 library(ggbreak)
 library(patchwork)
+library(jsonlite)
 
 ### Functions
 #normalise TR motifs; can be string with commas
@@ -59,8 +60,8 @@ normalise_call <- function(in_dna) {
 gnomADSTRcalls = read.csv('/Users/quinlan/Documents/Quinlan-PhD/UDN+STRdb/gnomAD_STR_genotypes__including_all_age_and_pcr_info__2023_06_28.tsv',
                           sep = '\t', stringsAsFactors = FALSE)
 
-STR_table <- read.csv('/Users/quinlan/Documents/Git/STRchive/data/STR-disease-loci.csv',
-                      stringsAsFactors = FALSE)
+STR_table <- fromJSON("/Users/quinlan/Documents/Git/STRchive-1/STRchive/data/STRchive-database.json")
+
 
 # change to match gnomAD and recognize different loci within same gene
 STR_table$gene[STR_table$gene == "C9orf72"] <- "C9ORF72"
@@ -73,15 +74,21 @@ STR_table$gene[STR_table$gene == "HOXA13" & STR_table$stop_hg38 == 27199732] <- 
 
 ## smaller dataset with more relevant columns
 STR_table_clean <-subset(STR_table, select=c("disease_id", "gene",
-                                             "reference_motif_reference_orientation", "Inheritance",
-                                             "type", "normal_min", "normal_max",
+                                             "reference_motif_reference_orientation", "inheritance",
+                                             "type", "benign_min", "benign_max",
                                              "intermediate_min", "intermediate_max",
                                              "pathogenic_min", "pathogenic_max",
-                                             "repeatunitlen", "age_onset_min","typ_age_onset_min",
+                                             "motif_len", "age_onset_min","typ_age_onset_min",
                                              "age_onset_max", "typ_age_onset_max", "novel", "pathogenic_motif_reference_orientation"))
+
+# unlist to normalize
+STR_table_clean <- STR_table_clean %>%
+  mutate(pathogenic_motif_reference_orientation = map_chr(pathogenic_motif_reference_orientation, ~str_c(.x, collapse = ",")))
 
 STR_table_clean$repeatunit_path_normalized <- sapply(STR_table_clean$pathogenic_motif_reference_orientation, function(x) normalise_str(as.character(x)))
 
+STR_table_clean <- STR_table_clean %>%
+  mutate(reference_motif_reference_orientation = map_chr(reference_motif_reference_orientation, ~str_c(.x, collapse = ",")))
 
 STR_table_clean$repeatunit_ref_normalized <- sapply(STR_table_clean$reference_motif_reference_orientation, function(x) normalise_str(as.character(x)))
 
