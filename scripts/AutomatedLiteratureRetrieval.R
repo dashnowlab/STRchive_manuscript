@@ -10,8 +10,7 @@ library(stringr)
 
 ### Data Setup
 # change to STRchive directory
-data <- read.csv('/Users/quinlan/Documents/Git/STRchive_manuscript/data/STR-disease-loci.csv',
-                 stringsAsFactors = FALSE)
+data <- fromJSON("/Users/quinlan/Documents/Git/STRchive-1/STRchive/data/STRchive-database.json")
 
 # Filter out NA values, if there are any, from the 'gene' column
 filtered_data <- data[!is.na(data$gene), ]
@@ -49,7 +48,7 @@ gene_info$external_synonym[is.na(gene_info$external_synonym) |
 
 # curated list of synonyms to exclude based on non-specific results
 excluded_synonym_list <- c("B37", "MHP", "MED", "DM", "DM1", "FA", "GAC", "SPD",
-                           "PRP", "A1", "CCD", "PHP", "VCF")
+                           "PRP", "A1", "CCD", "PHP", "VCF", "PEM", "MCD", "EMA")
 
 #remove from gene_info
 gene_info <- gene_info %>%

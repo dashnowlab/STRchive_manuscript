@@ -2,10 +2,7 @@ library(RColorBrewer)
 library(waffle)
 
 ### Figure 1A
-# Generate 5 shades of blue
-#blue_palette <- colorRampPalette(c("#ADD8E6", "#6495ED", "#4169E1", "#0000FF", "#00008B"))(5)
-
-blue_palette <- colorRampPalette(c("lightgray", "#ADD8E6", "#4169E1", "#00008B", "black"))(5)
+blue_palette <- colorRampPalette(c("lightgray", "darkgray", "#ADD8E6", "#4169E1", "#00008B", "black"))(6)
 
 
 # Count the number of characters in pathogenic_motif_reference_orientation
@@ -15,7 +12,7 @@ STR_table$length_characters <- str_length(STR_table$pathogenic_motif_reference_o
 STR_table$length_characters[STR_table$length_characters > 6] <- ">6"
 
 #order for plot
-limits <- c("3", "4", "5", "6", ">6")
+limits <- c("1","3", "4", "5", "6", ">6")
 
 # Mutate the type for POLG gene
 STR_table <- STR_table %>%
@@ -27,17 +24,22 @@ ggplot(STR_table, aes(x = type, fill = factor(as.character(length_characters), l
   labs(x = "Genomic region type",
        y = "Number of loci") +
   scale_fill_manual(values = blue_palette, name = "Motif length", limits = limits) +
-  theme_minimal()
+  theme_minimal() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+
 
 #Further determining by coding subtype; taken from literature review
-STR_table$type2 <- ifelse(tolower(trimws(STR_table$Mechanism)) == "polyglutamine", "PolyQ",
-                          ifelse(tolower(trimws(STR_table$Mechanism)) == "polyalanine", "PolyA", STR_table$type))
+STR_table$type2 <- ifelse(grepl("polyglutamine", STR_table$mechanism_detail, ignore.case = TRUE), "PolyQ",
+                          ifelse(grepl("polyalanine", STR_table$mechanism_detail, ignore.case = TRUE), "PolyA", STR_table$type))
 
 STR_table <- STR_table %>%
   mutate(type2 = ifelse(gene == 'NIPA1', 'PolyA', type2))
 
 STR_table <- STR_table %>%
   mutate(type2 = ifelse(gene == 'POLG', 'PolyQ', type2))
+
+STR_table <- STR_table %>%
+  mutate(type2 = ifelse(gene == 'HTT', 'PolyQ', type2))
 
 STR_table <- STR_table %>%
   mutate(type2 = ifelse(gene == 'PRDM12', 'PolyA', type2))
@@ -62,6 +64,9 @@ STR_table_coding <- STR_table_coding %>%
 
 STR_table_coding <- STR_table_coding %>%
   mutate(type2 = ifelse(gene == 'VWA1', 'Other', type2))
+
+#take out MUC1
+STR_table_coding <- subset(STR_table_coding, gene != "MUC1")
 
 # further detail is desired
 # STR_table_coding <- STR_table_coding %>%
@@ -91,14 +96,14 @@ waffle(type_counts, rows = 5, size = 2, colors = qual_palette,
 ### Figure 1B
 STR_table_adjusted <- STR_table %>%
   mutate(
-    normal_min = coalesce(normal_min, normal_max),
+    benign_min = coalesce(benign_min, benign_max),
     pathogenic_max = coalesce(pathogenic_max, pathogenic_min)
   )
 
 STR_table_adjusted <- STR_table_adjusted %>%
   mutate(
-    normal_min = ifelse(gene == "MARCHF6", 0, normal_min),
-    normal_max = ifelse(gene == "MARCHF6", 0, normal_max)
+    benign_min = ifelse(gene == "MARCHF6", 0, benign_min),
+    benign_max = ifelse(gene == "MARCHF6", 0, benign_max)
   )
 
 # PMID: 20399836
@@ -108,15 +113,20 @@ STR_table_adjusted <- STR_table_adjusted %>%
     pathogenic_max = ifelse(gene == "POLG", 14, pathogenic_max)
   )
 
-STR_table_adjusted$norm_min_bp = STR_table_adjusted$normal_min * STR_table_adjusted$repeatunitlen
-STR_table_adjusted$norm_max_bp = STR_table_adjusted$normal_max * STR_table_adjusted$repeatunitlen
-STR_table_adjusted$int_min_bp = STR_table_adjusted$intermediate_min * STR_table_adjusted$repeatunitlen
-STR_table_adjusted$int_max_bp = STR_table_adjusted$intermediate_max * STR_table_adjusted$repeatunitlen
-STR_table_adjusted$path_min_bp = STR_table_adjusted$pathogenic_min * STR_table_adjusted$repeatunitlen
-STR_table_adjusted$path_max_bp = STR_table_adjusted$pathogenic_max * STR_table_adjusted$repeatunitlen
+STR_table_adjusted$norm_min_bp = STR_table_adjusted$benign_min * STR_table_adjusted$motif_len
+STR_table_adjusted$norm_max_bp = STR_table_adjusted$benign_max * STR_table_adjusted$motif_len
+STR_table_adjusted$int_min_bp = STR_table_adjusted$intermediate_min * STR_table_adjusted$motif_len
+STR_table_adjusted$int_max_bp = STR_table_adjusted$intermediate_max * STR_table_adjusted$motif_len
+STR_table_adjusted$path_min_bp = STR_table_adjusted$pathogenic_min * STR_table_adjusted$motif_len
+STR_table_adjusted$path_max_bp = STR_table_adjusted$pathogenic_max * STR_table_adjusted$motif_len
 
 
 ### presumably, I'm going to remove untrustworthy data
+
+genes_to_remove <- c("DMD", "ZIC3", "TNR6CA", "YEATS2", "TBX1", "POLG", "NAXE", "RAI1")
+
+STR_table_adjusted <- STR_table_adjusted %>%
+  filter(!gene %in% genes_to_remove)
 
 ggplot(STR_table_adjusted, aes(x = gene)) +
   theme_minimal() +

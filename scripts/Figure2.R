@@ -1,22 +1,20 @@
 library(ggplot2)
 library(ggrepel)
 library(scales)
-library(ggplot2)
-library(ggrepel)
-library(scales)
+library(dplyr)
 
 #can upload data from file path or use all_pub_info_df
-# either can be generated from AutomatedLiteratureRetrieval.R
- file_path <- "/Users/quinlan/Documents/Git/STRchive_manuscript/data/all_pub_info_20240430.tsv"
+# either can be GeneNamerated from AutomatedLiteratureRetrieval.R
+# file_path <- "/Users/quinlan/Documents/Git/STRchive_manuscript/data/all_pub_info_20240430.tsv"
  #
- all_pub_info_df <- read.table(file_path, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+ #all_pub_info_df <- read.table(file_path, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
 
 
 ### Adding more curated data to use in visualization of PMIDs
 # first publication by PMID
 firstpub <- data.frame(
   stringsAsFactors = FALSE,
-  GeneName = c("AFF2","AFF3","AR","ARX",
+  GeneName = c("ABCD3","AFF2","AFF3","AR","ARX",
                "ATN1","ATXN1","ATXN10","ATXN2","ATXN3","ATXN7",
                "ATXN8OS","BEAN1","C9orf72","CACNA1A","CBL","COMP",
                "CSTB","DAB1","DIP2B","DMD","DMPK","EIF4A3","FGF14",
@@ -26,8 +24,9 @@ firstpub <- data.frame(
                "RAPGEF2","RFC1","RILPL1","RUNX2","SAMD12",
                "STARD7","TBP","TCF4","THAP11","TNRC6A","VWA1","XYLT1",
                "YEATS2","ZFHX3","ZIC2","ZIC3","ZNF713","CNBP",
-               "PPP2R2B", "SOX3", "TBX1", "PRDM12"),
-  PMID = c(8334699L,24763282L,1461383L,
+               "PPP2R2B", "SOX3", "TBX1", "PRDM12", "MUC1", "NAXE",
+               "pre-MIR7-2", "RAI1", "TAF1"),
+  PMID = c(39068203L, 8334699L,24763282L,1461383L,
            19587282L,7842016L,7951322L,11017075L,8896556L,
            7874163L,8908515L,10192387L,19878914L,22154785L,9371901L,
            7603564L,9887340L,9126745L,28686858L,17236128L,
@@ -39,7 +38,7 @@ firstpub <- data.frame(
            26220009L,29507423L,31664034L,10484774L,23185296L,24677642L,
            29507423L,33559681L,30554721L,31539032L,38035881L,
            11285244L,20452998L,25196122L,11486088L,10581021L,12428212L,
-           19948535L,26005867)
+           19948535L,26005867L, 23396133L,39455596L, 38714869L, 37994247L, 29229810)
 )
 
 
@@ -73,6 +72,8 @@ merged_df$PublicationYear[merged_df$PMID == 8614804] <- 1996
 merged_df$PublicationYear[merged_df$PMID == 38035881] <- 2023
 # fixing pubmed index bug that has wrong year for this PMID
 
+merged_df$PublicationYear[merged_df$PMID == 38714869] <- 2024
+
 #note: The final HOXA13 locus was characterized in the 2004 PMID here,
 # but a 2000 manuscript identifed an expansion in the third tract (PMID:10839976)
 
@@ -81,7 +82,7 @@ merged_df <- merged_df %>%
 
 all_pub_info_df$PublicationYear <- as.numeric(all_pub_info_df$PublicationYear)
 
-# Join 'earliest_years' with 'all_pmids' based on 'gene_name'
+# Join 'earliest_years' with 'all_pmids' based on 'GeneName_name'
 merged_df <- inner_join(merged_df, all_pub_info_df, by = "GeneName")
 
 # Filter out rows where Publicationyear is earlier than the EarliestPublicationYear
@@ -92,7 +93,7 @@ filtered_df <- merged_df %>%
 filtered_df$PMID.y <- as.numeric(filtered_df$PMID.y)
 
 # Find the PMID.x values that are not present in PMID.y, add'em in
-missing_pmids <- anti_join(filtered_df, filtered_df %>% select(PMID.y),
+missing_pmids <- anti_join(filtered_df, filtered_df %>% dplyr::select(PMID.y),
                            by = c("PMID.x" = "PMID.y"))
 
 # Create a new dataframe with the missing PMIDs and EarliestPublicationYear
@@ -106,16 +107,19 @@ filtered_df <- bind_rows(filtered_df, new_rows)
 
 # evidence by number of independent observations
 evidence <- data.frame(
-  GeneName = c("AFF2", "AFF3", "AR", "ARX", "ATN1", "ATXN1", "ATXN10", "ATXN2", "ATXN3",
-               "ATXN7", "ATXN8OS", "BEAN1", "C9orf72", "CACNA1A", "CBL", "COMP", "DAB1",
-               "DIP2B", "DMD", "DMPK", "FMR1", "FOXL2", "FXN", "GIPC1", "GLS", "HOXA13",
-               "HOXD13", "HTT", "JPH3", "LRP12", "MARCHF6", "NOP56", "NIPA1", "NOTCH2NLC",
-               "NUTM2B-AS1", "PABPN1", "PHOX2B", "POLG", "PPP2R2B", "PRDM12", "RAPGEF2", "RFC1",
-               "RILPL1", "RUNX2", "SAMD12", "SOX3", "STARD7", "TBP", "TBX1", "TCF4", "TNRC6A",
-               "XYLT1", "YEATS2", "ZIC2", "ZIC3", "ZNF713", "CNBP", "CSTB", "EIF4A3", "PRNP",
-               "VWA1", "ABCD3", "FGF14", "ZFHX3", "THAP11"
-  ),
-  ind_obs = c("100 > x > 50","< 10","> 100","50 > x > 10","100 > x > 50",
+  GeneName = c("ABCD3","AFF2","AFF3","AR","ARX",
+               "ATN1","ATXN1","ATXN10","ATXN2","ATXN3","ATXN7",
+               "ATXN8OS","BEAN1","C9orf72","CACNA1A","CBL","COMP",
+               "CSTB","DAB1","DIP2B","DMD","DMPK","EIF4A3","FGF14",
+               "FMR1","FOXL2","FXN","GIPC1","GLS","HOXA13","HOXD13",
+               "HTT","JPH3","LRP12","MARCHF6","NIPA1","NOP56",
+               "NOTCH2NLC","NUTM2B-AS1","PABPN1","PHOX2B","POLG","PRNP",
+               "RAPGEF2","RFC1","RILPL1","RUNX2","SAMD12",
+               "STARD7","TBP","TCF4","THAP11","TNRC6A","VWA1","XYLT1",
+               "YEATS2","ZFHX3","ZIC2","ZIC3","ZNF713","CNBP",
+               "PPP2R2B", "SOX3", "TBX1", "PRDM12", "MUC1", "NAXE",
+               "pre-MIR7-2", "RAI1", "TAF1"),
+  ind_obs = c("< 10","100 > x > 50","< 10","> 100","50 > x > 10","100 > x > 50",
               "> 100","100 > x > 50","> 100","> 100","> 100","> 100","> 100",
               "> 100","> 100","< 10","< 10","50 > x > 10","< 10","< 10","> 100","> 100",
               "50 > x > 10","> 100","50 > x > 10","< 10","< 10","< 10","> 100",
@@ -123,7 +127,7 @@ evidence <- data.frame(
               "> 100","> 100","> 100","< 10","< 10","> 100","50 > x > 10","< 10","> 100","< 10",
               "50 > x > 10","100 > x > 50","< 10","> 100","< 10","50 > x > 10","< 10","50 > x > 10",
               "< 10","< 10","> 100","> 100","50 > x > 10","> 100","50 > x > 10","< 10","> 100",
-              "50 > x > 10","< 10"))
+              "50 > x > 10","> 100", "< 10", "50 > x > 10","< 10","> 100"))
 
 # summary of PMIDS and years
 summary_data <- filtered_df %>%
@@ -141,8 +145,6 @@ labels <- c("< 10" = "< 10", "50 > x > 10" = "10 < x < 50",
 limits <- c("< 10", "50 > x > 10", "100 > x > 50", "> 100")
 
 #final plot
-library(ggplot2)
-
 ggplot(merged_data, aes(x = MinPublicationYear, y = TotalPMIDs, label = GeneName)) +
   geom_jitter(aes(size = ind_obs, color = ind_obs), width = 0.5) +
   geom_text_repel(data = subset(summary_data, !duplicated(GeneName)), aes(label = GeneName),
@@ -187,7 +189,7 @@ merged_df <- merged_df %>%
 
 all_pub_info_df$PublicationYear <- as.numeric(all_pub_info_df$PublicationYear)
 
-# Join 'earliest_years' with 'all_pmids' based on 'gene_name'
+# Join 'earliest_years' with 'all_pmids' based on 'GeneName_name'
 merged_df <- inner_join(merged_df, all_pub_info_df, by = "GeneName")
 
 # Filter out rows where Publicationyear is earlier than the EarliestPublicationYear
@@ -211,25 +213,6 @@ new_rows <- missing_pmids %>%
 filtered_df <- bind_rows(filtered_df, new_rows)
 
 # evidence by number of independent observations
-evidence <- data.frame(
-  GeneName = c("AFF2", "AFF3", "AR", "ARX", "ATN1", "ATXN1", "ATXN10", "ATXN2", "ATXN3",
-               "ATXN7", "ATXN8OS", "BEAN1", "C9orf72", "CACNA1A", "CBL", "COMP", "DAB1",
-               "DIP2B", "DMD", "DMPK", "FMR1", "FOXL2", "FXN", "GIPC1", "GLS", "HOXA13",
-               "HOXD13", "HTT", "JPH3", "LRP12", "MARCHF6", "NOP56", "NIPA1", "NOTCH2NLC",
-               "NUTM2B-AS1", "PABPN1", "PHOX2B", "POLG", "PPP2R2B", "PRDM12", "RAPGEF2", "RFC1",
-               "RILPL1", "RUNX2", "SAMD12", "SOX3", "STARD7", "TBP", "TBX1", "TCF4", "TNRC6A",
-               "XYLT1", "YEATS2", "ZIC2", "ZIC3", "ZNF713", "CNBP", "CSTB", "EIF4A3", "PRNP",
-               "VWA1", "ABCD3", "FGF14", "ZFHX3", "THAP11"
-  ),
-  ind_obs = c("100 > x > 50","< 10","> 100","50 > x > 10","100 > x > 50",
-              "> 100","100 > x > 50","> 100","> 100","> 100","> 100","> 100",
-              "> 100","> 100","< 10","< 10","50 > x > 10","< 10","< 10","> 100","> 100",
-              "50 > x > 10","> 100","50 > x > 10","< 10","< 10","< 10","> 100",
-              "100 > x > 50","100 > x > 50","> 100","100 > x > 50","> 100","> 100","< 10","> 100",
-              "> 100","> 100","> 100","< 10","< 10","> 100","50 > x > 10","< 10","> 100","< 10",
-              "50 > x > 10","100 > x > 50","< 10","> 100","< 10","50 > x > 10","< 10","50 > x > 10",
-              "< 10","< 10","> 100","> 100","50 > x > 10","> 100","50 > x > 10","< 10","> 100",
-              "50 > x > 10","< 10"))
 
 # summary of PMIDS and years
 summary_data <- filtered_df %>%

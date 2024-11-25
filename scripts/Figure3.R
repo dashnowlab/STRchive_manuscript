@@ -6,7 +6,8 @@ evidence <- data.frame(
            "NUTM2B-AS1", "PABPN1", "PHOX2B", "POLG", "PPP2R2B", "PRDM12", "RAPGEF2", "RFC1",
            "RILPL1", "RUNX2", "SAMD12", "SOX3", "STARD7", "TBP", "TBX1", "TCF4", "TNRC6A",
            "XYLT1", "YEATS2", "ZIC2", "ZIC3", "ZNF713", "CNBP", "CSTB", "EIF4A3", "PRNP",
-           "VWA1", "ABCD3", "FGF14", "ZFHX3", "THAP11"
+           "VWA1", "ABCD3", "FGF14", "ZFHX3", "THAP11", "MUC1", "NAXE",
+           "pre-MIR7-2", "RAI1", "TAF1"
   ),
   ind_obs = c("100 > x > 50","< 10","> 100","50 > x > 10","< 10","100 > x > 50",
               "> 100","100 > x > 50","> 100","> 100","> 100","> 100","> 100",
@@ -16,7 +17,7 @@ evidence <- data.frame(
               "> 100","> 100","> 100","< 10","< 10","> 100","50 > x > 10","< 10","> 100","< 10",
               "50 > x > 10","100 > x > 50","< 10","> 100","< 10","50 > x > 10","< 10","50 > x > 10",
               "< 10","< 10","> 100","> 100","50 > x > 10","> 100","50 > x > 10","< 10","> 100",
-              "50 > x > 10","< 10"))
+              "50 > x > 10","< 10","> 100", "< 10", "50 > x > 10","< 10","> 100"))
 
 STR_table_evidence <- merge(STR_table_clean, evidence,
                             by = "gene", all.x = TRUE)
@@ -42,13 +43,13 @@ ordered_gene_names <- rev(c(first_genes, other_genes$gene))
 #order the df by this
 STR_table_evidence$gene <- factor(STR_table_evidence$gene, levels = ordered_gene_names)
 
-genes_to_remove <- c("DMD", "ZIC3", "TNR6CA", "YEATS2", "TBX1", "POLG")
+genes_to_remove <- c("DMD", "ZIC3", "TNR6CA", "YEATS2", "TBX1", "POLG", "NAXE", "RAI1")
 
 STR_table_evidence <- STR_table_evidence %>%
   filter(!gene %in% genes_to_remove)
 
 #plot it
-ggplot(subset(STR_table_evidence, !is.na(age_onset_min) & Inheritance != ''),
+ggplot(subset(STR_table_evidence, !is.na(age_onset_min) & inheritance != ''),
        aes(color = ind_obs, x = gene)) +
   scale_x_discrete(name = 'Gene') +
   geom_linerange(aes(ymin = age_onset_min, ymax = age_onset_max), size = 3, alpha = 0.7) +
