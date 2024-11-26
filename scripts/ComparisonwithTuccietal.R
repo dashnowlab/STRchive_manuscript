@@ -70,7 +70,7 @@ combined_df_Tucci <- merge(Tucci_wide, combined_df, by="gene")
 ### C9ORF72, we used 250 and they used 31!
 ### all other loci had pathogenic thresholds
 
-AD_total <- subset(AD_total, gene %in% c("ATXN1", "ATXN7", "C9ORF72"))
+AD_total <- subset(AD_total, gene %in% c("ATXN1", "ATXN7", "C9ORF72", "ATXN2"))
 AD_total$pathogenic_min[AD_total$gene == "ATXN1"] <- 44
 AD_total$pathogenic_min[AD_total$gene == "ATXN2"] <- 33
 AD_total$pathogenic_min[AD_total$gene == "ATXN7"] <- 36
@@ -121,7 +121,7 @@ combined_df_adj <- do.call(rbind, list(combined_df, adj_gnomAD_df))
 
 ### Make sure our merged result keeps the adj genes
 Tucci_wide_duplicates <- Tucci_wide %>%
-  filter(gene %in% c("C9ORF72", "ATXN1", "ATXN7")) %>%
+  filter(gene %in% c("C9ORF72", "ATXN1", "ATXN7", "ATXN2")) %>%
   mutate(gene = paste0(gene, "_adj"))
 
 Tucci_wide <- bind_rows(Tucci_wide, Tucci_wide_duplicates)
@@ -140,8 +140,8 @@ combined_df_Tucci_adj <- combined_df_Tucci_adj %>%
 ### Order by pathogenic count, with adjusted genes adjacent
 combined_df_Tucci_adj$gene <- factor(combined_df_Tucci_adj$gene, levels=c("ATN1",
                 "ATXN3", "C9ORF72_adj","C9ORF72", "TBP", "CACNA1A", "JPH3", "HTT",
-                "ATXN7_adj", "ATXN7", "DMPK", "XY_AR", "ATXN2", "ATXN1_adj","ATXN1",
-                "FXN", "ATXN2_adj"))
+                "ATXN7_adj", "ATXN7", "DMPK", "XY_AR", "ATXN2_adj", "ATXN2", "ATXN1_adj","ATXN1",
+                "FXN"))
 
 ggplot(data = filter(combined_df_Tucci_adj), aes(x = gene, y = pathogenic_percent)) +
   geom_errorbar(aes(ymin = Pathogenic_Count_lower_ci, ymax = Pathogenic_Count_upper_ci), width = 0.3, size = 2, color = "black") +
