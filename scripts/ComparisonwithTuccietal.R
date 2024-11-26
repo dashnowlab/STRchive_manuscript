@@ -53,7 +53,7 @@ combined_df <- subset(combined_df, select = c(gene, pathogenic_percent,
                                               carrier_percent,
                                               Carrier_Count_lower_ci,
                                               Carrier_Count_upper_ci,
-                                              Inheritance))
+                                              inheritance))
 
 ### Tucci is really calculating a carrier frequency; FXN is the only AR in this
 ### data set so we need to move the carrier to pathogenic for meaningful comparison
@@ -72,16 +72,33 @@ combined_df_Tucci <- merge(Tucci_wide, combined_df, by="gene")
 
 AD_total <- subset(AD_total, gene %in% c("ATXN1", "ATXN7", "C9ORF72"))
 AD_total$pathogenic_min[AD_total$gene == "ATXN1"] <- 44
+AD_total$pathogenic_min[AD_total$gene == "ATXN2"] <- 33
 AD_total$pathogenic_min[AD_total$gene == "ATXN7"] <- 36
 AD_total$pathogenic_min[AD_total$gene == "C9ORF72"] <- 31
 
 ### get new PG estimates with confidence interval
-AD_Allele2_greater_than_path_min <- (AD_total$Allele2LowerBound >= AD_total$pathogenic_min) &
-  (AD_total$motif_norm %in% AD_total$repeatunit_path_normalized_list)
-AD_result1 <- aggregate(cbind(AD_Allele2_greater_than_path_min), by = list(AD_total$gene), FUN = sum, na.rm=TRUE)
-AD_result2 <- aggregate(cbind(AD_total$Allele2), by = list(AD_total$gene, AD_total$repeatunit_path_normalized, AD_total$Inheritance), FUN = function(x) sum(!is.na(x)))
+AD_total <- AD_total %>%
+  mutate(
+    AD_Allele2_greater_than_path_min = (Allele2LowerBound >= pathogenic_min) &
+      (motif_norm %in% repeatunit_path_normalized_list)
+  )
+
+AD_result1 <- AD_total %>%
+  group_by(gene) %>%
+  summarise(
+    Allele2_greater_than_path_min_sum = sum(AD_Allele2_greater_than_path_min, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+AD_result2 <- AD_total %>%
+  group_by(gene, repeatunit_path_normalized, inheritance) %>%
+  summarise(
+    Allele2_non_na_count = sum(!is.na(Allele2)),
+    .groups = "drop"
+  )
+
 adj_gnomAD_df <- merge(AD_result1, AD_result2)
-colnames(adj_gnomAD_df) <- c("gene", "Pathogenic_Count", "Motif", "Inheritance", "Total_Loci")
+colnames(adj_gnomAD_df) <- c("gene", "Pathogenic_Count", "Motif", "inheritance", "Total_Loci")
 
 adj_gnomAD_df$pathogenic_percent <- adj_gnomAD_df$Pathogenic_Count/adj_gnomAD_df$Total_Loci*100
 
@@ -90,6 +107,7 @@ adj_gnomAD_df <- calculate_ci(adj_gnomAD_df, successes_col = "Pathogenic_Count",
 
 adj_gnomAD_df$gene[adj_gnomAD_df$gene == "ATXN1"] <- "ATXN1_adj"
 adj_gnomAD_df$gene[adj_gnomAD_df$gene == "ATXN7"] <- "ATXN7_adj"
+adj_gnomAD_df$gene[adj_gnomAD_df$gene == "ATXN2"] <- "ATXN2_adj"
 adj_gnomAD_df$gene[adj_gnomAD_df$gene == "C9ORF72"] <- "C9ORF72_adj"
 
 
@@ -123,7 +141,7 @@ combined_df_Tucci_adj <- combined_df_Tucci_adj %>%
 combined_df_Tucci_adj$gene <- factor(combined_df_Tucci_adj$gene, levels=c("ATN1",
                 "ATXN3", "C9ORF72_adj","C9ORF72", "TBP", "CACNA1A", "JPH3", "HTT",
                 "ATXN7_adj", "ATXN7", "DMPK", "XY_AR", "ATXN2", "ATXN1_adj","ATXN1",
-                "FXN"))
+                "FXN", "ATXN2_adj"))
 
 ggplot(data = filter(combined_df_Tucci_adj), aes(x = gene, y = pathogenic_percent)) +
   geom_errorbar(aes(ymin = Pathogenic_Count_lower_ci, ymax = Pathogenic_Count_upper_ci), width = 0.3, size = 2, color = "black") +

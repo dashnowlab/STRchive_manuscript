@@ -55,7 +55,7 @@ calculate_ci <- function(df, successes_col, trials_col, conf_level, method) {
 total_prev <- subset(total, total$motif_norm != "CNG")
 
 #including CNG
-# total_prev <- total
+#total_prev <- total
 
 #while both inheritances are possible... they're more AD, so, we use that here
 total_prev <- total_prev %>%

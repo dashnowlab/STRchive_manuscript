@@ -6,7 +6,7 @@ blue_palette <- colorRampPalette(c("lightgray", "darkgray", "#ADD8E6", "#4169E1"
 
 
 # Count the number of characters in pathogenic_motif_reference_orientation
-STR_table$length_characters <- str_length(STR_table$pathogenic_motif_reference_orientation)
+STR_table$length_characters <- str_length(STR_table$reference_motif_reference_orientation)
 
 #group everything larger than 6 (the VNTRs)
 STR_table$length_characters[STR_table$length_characters > 6] <- ">6"
