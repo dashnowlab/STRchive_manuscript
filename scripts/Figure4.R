@@ -56,7 +56,6 @@ ggplot(data = filter(combined_df, !is.na(combined_df$prevalence)),
   theme(axis.text.x = element_text(vjust = 0.5, hjust=1, size =15),
         plot.title = element_text(hjust = 0.5)) +
   ylim(0,0.64) +
-  theme(axis.text.y = element_text(colour = color_labels)) +
   theme_void()
 
 

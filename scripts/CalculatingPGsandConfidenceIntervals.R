@@ -63,6 +63,15 @@ total_prev <- total_prev %>%
 total_prev <- total_prev %>%
   mutate(inheritance = ifelse(gene == 'PABPN1', 'AD', inheritance))
 
+# FOXL2 is AD with one allele >23, and AR if both alleles > 19
+# since all allele1_lowerbound is 14, we'll use AD with a 24 path min
+total_prev <- total_prev %>%
+  mutate(inheritance = ifelse(gene == 'FOXL2', 'AD', inheritance))
+
+total_prev <- total_prev %>%
+  mutate(pathogenic_min = ifelse(gene == 'FOXL2',24, pathogenic_min))
+
+
 total_prev$repeatunit_path_normalized_list <- strsplit(as.character(total_prev$repeatunit_path_normalized), ",")
 
 AD_total <- subset(total_prev, inheritance == "AD")
@@ -225,3 +234,9 @@ combined_df$prevalence[combined_df$gene == "XY_AR"] <-  1/30000
 combined_df$prevalence[combined_df$gene == "XY_DMD"] <- 4.8/100000
 
 combined_df$prevalence_dec <- sapply(combined_df$prevalence, function(fraction) eval(parse(text = fraction)))
+
+# Remove the loci that are suspicious
+manual_suspects <- c("XY_AFF2", "ARX_1", "NOTCH2NLC", "TBP", "ZNF713", "ARX_2", "FOXL2", "HOXA13_1", "HOXA13_2", "HOXA13_3", "NIPA1", "PABPN1", "PHOX2B", "RUNX2", "SOX3", "TBX1", "ZIC2")
+
+combined_df <- combined_df %>%
+  filter(!gene %in% manual_suspects)
