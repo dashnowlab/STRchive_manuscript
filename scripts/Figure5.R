@@ -29,8 +29,13 @@ longreadmotifcounts$motif <- sapply(longreadmotifcounts$motif, function(x) norma
 
 #normalize motifs
 STR_table_motif$repeatunit_ref_normalized <- sapply(STR_table$reference_motif_reference_orientation, function(x) normalise_str(as.character(x)))
-STR_table_motif$repeatunit_path_normalized <- sapply(STR_table$pathogenic_motif_reference_orientation, function(x) normalise_str(as.character(x)))
+STR_table_motif$repeatunit_path_normalized <- sapply(STR_table_clean$pathogenic_motif_reference_orientation, function(x) normalise_str(as.character(x)))
+
+STR_table <- STR_table %>%
+  mutate(benign_motif_reference_orientation = map_chr(benign_motif_reference_orientation, ~str_c(.x, collapse = ",")))
 STR_table_motif$benign_motif_reference_orientation <- sapply(STR_table$benign_motif_reference_orientation, function(x) normalise_str(as.character(x)))
+STR_table <- STR_table %>%
+  mutate(unknown_motif_reference_orientation = map_chr(unknown_motif_reference_orientation, ~str_c(.x, collapse = ",")))
 STR_table_motif$unknown_motif_reference_orientation <- sapply(STR_table$unknown_motif_reference_orientation, function(x) normalise_str(as.character(x)))
 
 # account for CNG ambiguity
@@ -255,14 +260,14 @@ ggplot(merged_df, aes(x = gene, fill = classification)) +
   geom_bar() +
   geom_text(data = merged_df[grepl("_lr$", merged_df$gene), ],
             aes(x = gene,
-                y = (max(UniqueMotifCount))*1.1,
+                y = (max(UniqueMotifCount))*1.2,
                 label = "LR"),
             vjust = -0.5,
             size = 5,
             color = "black") +
   geom_text(data = merged_df[grepl("_unique$", merged_df$gene), ],
             aes(x = gene,
-                y = (max(UniqueMotifCount))*0.9,
+                y = (max(UniqueMotifCount))*1.1,
                 label = "gnomAD"),
             vjust = -0.5,
             size = 4,
@@ -273,7 +278,7 @@ ggplot(merged_df, aes(x = gene, fill = classification)) +
                                "ref" = "Reference",
                                "unknown" = "Unknown",
                                "path" = "Pathogenic")) +
-  theme_minimal() +
+  theme_void() +
   theme(legend.position = "top",
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
