@@ -60,7 +60,7 @@ normalise_call <- function(in_dna) {
 gnomADSTRcalls = read.csv('/Users/quinlan/Documents/Quinlan-PhD/UDN+STRdb/gnomAD_STR_genotypes__including_all_age_and_pcr_info__2023_06_28.tsv',
                           sep = '\t', stringsAsFactors = FALSE)
 
-STR_table <- fromJSON("/Users/quinlan/Documents/Git/STRchive-1/STRchive/data/STRchive-database.json")
+STR_table <- fromJSON("/Users/quinlan/Documents/Git/STRchive-1/STRchive/data/STRchive-loci.json")
 
 
 # change to match gnomAD and recognize different loci within same gene
